@@ -1,11 +1,11 @@
- 
+``` 
      MMMM   MMMM      OOOOOOO    RRRRRR      UU    UU   KK    KK  SSSSSS
     MM MM  MM MM     OO    OO   RR    RR    UU    UU   KK   KK   SS
    MM  MM MM  MM    OO    OO   RR     RR   UU    UU   KK  KK      SSSS  
   MM   MMMM   MM   OO    OO   RR  RRRR    UU    UU   KK KK           SS
  MM           MM  OO    OO   RR   RR     UU    UU   KK   KK         SS 
 MM            MM  OOOOOOO   RR      RR    UUUUU    KK      KK  SSSSSS
-
+```
 
 
 Pfad zu MongoDB Daten:
