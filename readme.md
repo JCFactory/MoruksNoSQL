@@ -12,20 +12,20 @@ Pfad zu MongoDB Daten:
 ./mongo-data/db
 
 MongoDB-Server starten:
-Im MongoDB bin-Verzeichnis (z.B. /MongoDB/Server/3.4/bin) eingeben: 
+Im MongoDB bin-Verzeichnis (z.B. /MongoDB/Server/3.4/bin) eingeben:<br>
 mongod --dbpath (Pfad zum Projekt MoruksNoSQL)\mongo_data\db
 
-rabbitMQ-Server starten:
-In (pfad zu rabbitMQ-Installation)/RabbitMQ Server/rabbitmq_server-3.6.14/sbin
+rabbitMQ-Server starten:<br>
+In (pfad zu rabbitMQ-Installation)/RabbitMQ Server/rabbitmq_server-3.6.14/sbin<br>
 ausführen: rabbitmq-server
 
-Für Node-Server:
+Für Node-Server:<br>
 Node installieren: https://nodejs.org/en/
 
-Packete installieren 
-MongoDB: npm install mongodb --save
-rabbitMQ: npm install amqplib
-Nodemon: npm  install nodemon
+Packete installieren <br>
+MongoDB: npm install mongodb --save<br>
+rabbitMQ: npm install amqplib<br>
+Nodemon: npm  install nodemon<br>
 
-Node-Server starten:
+Node-Server starten:<br>
 (Pfad zum Projekt  MoruksNoSQL)/nodemon server.js
