@@ -5,7 +5,7 @@
    MM   MMMM   MM     OO    OO   RR  RRRR    UU    UU   KK KK        SSSS
   MM    MMMM   MM    OO    OO   RR  RR      UU    UU   KK KK            SS
  MM            MM   OO    OO   RR    RR    UU    UU   KK   KK          SS
-MM             MM   OOOOOO    RR       RR    UUUUU   KK       KK  SSSSSS 
+MM             MM   OOOOOO    RR       RR   UUUUU    KK       KK  SSSSSS 
 ```
 
 ## Backend
