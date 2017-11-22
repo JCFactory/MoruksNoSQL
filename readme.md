@@ -1,10 +1,11 @@
 ```
-     MMMM   MMMM      OOOOOOO    RRRRRR      UU    UU   KK    KK  SSSSSS
-    MM MM  MM MM     OO    OO   RR    RR    UU    UU   KK   KK   SS
-   MM  MM MM  MM    OO    OO   RR     RR   UU    UU   KK  KK      SSSS  
-  MM   MMMM   MM   OO    OO   RR  RRRR    UU    UU   KK KK           SS
- MM           MM  OO    OO   RR   RR     UU    UU   KK   KK         SS
-MM            MM  OOOOOOO   RR      RR    UUUUU    KK      KK  SSSSSS
+      MMMM   MMMM         OOOOOO    RRRRRR      UU    UU   KK    KK  SSSSSS
+     MM MM  MM MM       OO    OO   RR    RR    UU    UU   KK   KK   SS
+    MM  MM MM  MM      OO    OO   RR     RR   UU    UU   KK  KK     SS  
+   MM   MMMM   MM     OO    OO   RR  RRRR    UU    UU   KK KK        SSSS
+  MM    MMMM   MM    OO    OO   RR  RR      UU    UU   KK KK            SS
+ MM            MM   OO    OO   RR    RR    UU    UU   KK   KK          SS
+MM             MM   OOOOOO    RR       RR    UUUUU   KK       KK  SSSSSS 
 ```
 
 ## Backend
@@ -42,3 +43,12 @@ Backend ist nach Start unter Port: 3000 erreichbar z. B. http://localhost:3000 <
 Message an Backend senden:<br>
 ```**/MoruksNoSQL/node new_task.js <arg> ```<br>
 Argument wird an Server gesendet
+
+
+## Frontend
+
+### Installation
+```**/MoruksNoSQL/morukChat/npm install``` ausführen
+
+### Starten
+```**/MoruksNoSQL/morukChat/ng serve```
