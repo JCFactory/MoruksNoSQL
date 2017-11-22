@@ -48,25 +48,24 @@ function connectRabbitMQ() {
 
         conn.createChannel(function (err, ch) {
             if (err) throw err;
-            // create message queue with same name like collections
             var q = 'ch_1';
 
             ch.assertQueue(q, {durable: true});
-            ch.prefetch(1);
-            console.log(" [*] Waiting for messages in %s, Moruk. To exit press CTRL+C", q);
+            // ch.prefetch(1);
+            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
             ch.consume(q, function (msg) {
                 var message = msg.content.toString();
                 storeMessage(message, q);
                 console.log(" [x] Received %s", message);
-                ch.ack(msg);
-            }, {noAck: false} );
+                // ch.ack(msg);
+            }, {noAck: true} );
         });
     });
 }
 
 
 function storeMessage(message, channel) {
-    collections[channel].instert({name: 'Thaer', lname: 'Aldefai', message: message})
+    collections[channel].insert({name: 'Thaer', lname: 'Aldefai', message: message})
 }
 
 app.get('/', function (req, res) {
