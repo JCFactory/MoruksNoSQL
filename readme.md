@@ -7,35 +7,38 @@
 MM            MM  OOOOOOO   RR      RR    UUUUU    KK      KK  SSSSSS
 ```
 
+## Backend
 
 ### Pfad zu MongoDB Daten:
-./mongo-data/db
+```./mongo-data/db```
 
 ### MongoDB-Server starten:
 Im MongoDB bin-Verzeichnis (z.B. /MongoDB/Server/3.4/bin) eingeben:<br>
 ```mongod --dbpath (Pfad zum Projekt MoruksNoSQL)\mongo_data\db```
 
-### rabbitMQ-Server starten:<br>
-In (pfad zu rabbitMQ-Installation)/RabbitMQ Server/rabbitmq_server-3.6.14/sbin<br>
+### rabbitMQ-Server starten:
+In (pfad zu rabbitMQ-Installation)/RabbitMQ Server/rabbitmq_server-3.6.14/sbin
 ausführen: ```rabbitmq-server```
 
 ### Für Node-Server:<br>
 Node installieren: https://nodejs.org/en/
 
 ### Packete installieren <br>
-MongoDB: npm install mongodb --save<br>
-rabbitMQ: npm install amqplib<br>
-Nodemon: npm  install nodemon<br>
+MongoDB: ```npm install mongodb --save```<br>
+rabbitMQ: ```npm install amqplib```<br>
+Nodemon: ```npm  install nodemon```<br>
 
 
-### Backend
-
-#### Installation
+### Installation
 
 ```cd Pfad zum Projekt MoruksNoSQL/Chatsystem-Backend && npm install ```
 
-#### Starten
-
-Backend ist nach Start unter Port: 3000 erreichbar z. B. http://localhost:3000
+### Starten
+Backend ist nach Start unter Port: 3000 erreichbar z. B. http://localhost:3000 <br>
 ```cd Pfad zum Projekt MoruksNoSQL/Chatsystem-Backend && npm start ```
 
+
+### Hinweis
+Message an Backend senden:<br>
+```**/MoruksNoSQL/node new_task.js <arg> ```<br>
+Argument wird an Server gesendet
