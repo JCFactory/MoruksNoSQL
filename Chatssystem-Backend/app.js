@@ -4,11 +4,16 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-var mongo = require('mongodb').MongoClient;
-var amqp = require('amqplib/callback_api');
 
+
+
+// Import files for routing
 var index = require('./routes/index');
 var users = require('./routes/users');
+var channels = require('./routes/channels');
+
+var util = require('./components/rabbitmq');
+var mongo = require('./components/mongodb');
 
 var app = express();
 
@@ -24,10 +29,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+/**
+ * Routing
+ */
 app.use('/', index);
 app.use('/users', users);
+app.use('/channels', channels);
 
-// catch 404 and forward to error handler
+
+// Catch 404 and forward to error handler
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;
@@ -48,55 +58,12 @@ app.use(function(err, req, res, next) {
 module.exports = app;
 
 
-var db;
-var collections = {
-    ch_1: {},
-    ch_2: {}
-};
+mongo.connect(); // Connect with mongodb
+
+util.receiveMessagesFromChannel("General");
+util.receiveMessagesFromChannel("Default");
 
 
-connectMongo();
-connectRabbitMQ();
-
-function connectMongo() {
-    mongo.connect('mongodb://localhost:27017/rabbitDB', function (err, _db) {
-        console.log("Weeeh, I connected mongo database successfully");
-        db = _db;
-
-        // create collection with same name like message queue
-        db.createCollection("ch_1", function(err, res) {
-            if (err) throw err;
-            console.log("Collection ch_1 created!");
-        });
-
-        collections.ch_1 = db.collection('ch_1');
-    });
-}
-
-function connectRabbitMQ() {
-    amqp.connect('amqp://localhost', function (err, conn) {
-
-        conn.createChannel(function (err, ch) {
-            if (err) throw err;
-            var q = 'ch_1';
-
-            ch.assertQueue(q, {durable: true});
-            // ch.prefetch(1);
-            console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", q);
-            ch.consume(q, function (msg) {
-                var message = msg.content.toString();
-                storeMessage(message, q);
-                console.log(" [x] Received %s", message);
-                // ch.ack(msg);
-            }, {noAck: true} );
-        });
-    });
-}
-
-
-function storeMessage(message, channel) {
-    collections[channel].insert({name: 'Thaer', lname: 'Aldefai', message: message})
-}
 
 // todo move to route: channel
 // app.get('/channel/:id', function (req, res) {
