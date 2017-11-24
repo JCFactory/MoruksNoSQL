@@ -52,3 +52,28 @@ Argument wird an Server gesendet
 
 ### Starten
 ```**/MoruksNoSQL/morukChat/ng serve```
+
+
+
+### Mögliche Requests
+
+#### Nachrichten der Channels abrufen (GET)
+```http://localhost:3000/channels/:CHANNELNAME```
+
+#### Message an Channel senden (POST)
+```http://localhost:3000/channels/message```
+
+##### Inhalt der Body
+
+```
+{
+  "channel": "Default",
+  "message": "Thaer is frontend and backend ++"
+}
+```
+
+
+##### Vorhandene Channels
+* ch_1
+* General
+* Default
