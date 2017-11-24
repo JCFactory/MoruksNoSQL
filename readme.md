@@ -32,11 +32,11 @@ Nodemon: ```npm  install nodemon```<br>
 
 ### Installation
 
-```cd Pfad zum Projekt MoruksNoSQL/Chatsystem-Backend && npm install ```
+```cd Pfad zum Projekt MoruksNoSQL/Chatssystem-Backend && npm install ```
 
 ### Starten
 Backend ist nach Start unter Port: 3000 erreichbar z. B. http://localhost:3000 <br>
-```cd Pfad zum Projekt MoruksNoSQL/Chatsystem-Backend && npm start ```
+```cd Pfad zum Projekt MoruksNoSQL/Chatssystem-Backend && npm start ```
 
 
 ### Hinweis
