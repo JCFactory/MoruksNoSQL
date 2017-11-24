@@ -41,7 +41,7 @@ Backend ist nach Start unter Port: 3000 erreichbar z. B. http://localhost:3000 <
 
 ### Hinweis
 Message an Backend senden:<br>
-```**/MoruksNoSQL/node new_task.js <arg> ```<br>
+```**/MoruksNoSQL/node_modules new_task.js <arg> ```<br>
 Argument wird an Server gesendet
 
 
