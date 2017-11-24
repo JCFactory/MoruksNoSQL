@@ -55,15 +55,20 @@ Argument wird an Server gesendet
 
 
 
-### Mögliche Requests
+## Mögliche Requests
 
-#### Nachrichten der Channels abrufen (GET)
+#### Vorhandene Channels
+* ch_1
+* General
+* Default
+
+### Nachrichten der Channels abrufen (GET)
 ```http://localhost:3000/channels/:CHANNELNAME```
 
-#### Message an Channel senden (POST)
+### Message an Channel senden (POST)
 ```http://localhost:3000/channels/message```
 
-##### Inhalt der Body
+#### Inhalt der Body
 
 ```
 {
@@ -73,7 +78,3 @@ Argument wird an Server gesendet
 ```
 
 
-##### Vorhandene Channels
-* ch_1
-* General
-* Default
