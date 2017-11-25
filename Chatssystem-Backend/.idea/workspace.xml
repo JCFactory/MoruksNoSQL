@@ -17,8 +17,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="494">
-              <caret line="92" column="10" lean-forward="false" selection-start-line="92" selection-start-column="10" selection-end-line="92" selection-end-column="10" />
+            <state relative-caret-position="1256">
+              <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -27,8 +27,8 @@
       <file leaf-file-name="channels.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/routes/channels.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="450">
-              <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+            <state relative-caret-position="218">
+              <caret line="59" column="25" lean-forward="false" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -37,8 +37,8 @@
       <file leaf-file-name="mongodb.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/components/mongodb.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1125">
-              <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state relative-caret-position="306">
+              <caret line="68" column="24" lean-forward="false" selection-start-line="68" selection-start-column="16" selection-end-line="68" selection-end-column="24" />
               <folding>
                 <marker date="1511625211929" expanded="true" signature="168:202" ph="{...}" />
                 <marker date="1511625211929" expanded="true" signature="1325:1339" ph="{...}" />
@@ -50,8 +50,8 @@
       <file leaf-file-name="rabbitmq.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/components/rabbitmq.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="775">
-              <caret line="31" column="4" lean-forward="false" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
+            <state relative-caret-position="100">
+              <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -65,6 +65,7 @@
       <find>mongo.get</find>
       <find>mongo</find>
       <find>ch_1</find>
+      <find>self</find>
     </findStrings>
     <dirStrings>
       <dir>C:\Users\Steff\Documents\Studium\Semester6\nosql\MoruksNoSQL\Chatssystem-Backend</dir>
@@ -73,9 +74,9 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/routes/channels.js" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/components/mongodb.js" />
+        <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/routes/channels.js" />
       </list>
     </option>
   </component>
@@ -172,12 +173,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1511625133288</updated>
-      <workItem from="1511625134848" duration="79000" />
+      <workItem from="1511625134848" duration="2216000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="83000" />
+    <option name="totallyTimeSpent" value="2220000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="71" y="0" width="1858" height="1038" extended-state="0" />
@@ -311,34 +312,34 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/components/rabbitmq.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="775">
-          <caret line="31" column="4" lean-forward="false" selection-start-line="31" selection-start-column="4" selection-end-line="31" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/routes/channels.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="450">
-          <caret line="18" column="13" lean-forward="false" selection-start-line="18" selection-start-column="13" selection-end-line="18" selection-end-column="13" />
+        <state relative-caret-position="218">
+          <caret line="59" column="25" lean-forward="false" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="494">
-          <caret line="92" column="10" lean-forward="false" selection-start-line="92" selection-start-column="10" selection-end-line="92" selection-end-column="10" />
+        <state relative-caret-position="1256">
+          <caret line="73" column="0" lean-forward="true" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/components/rabbitmq.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="100">
+          <caret line="4" column="8" lean-forward="false" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="8" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/components/mongodb.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1125">
-          <caret line="45" column="0" lean-forward="true" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+        <state relative-caret-position="306">
+          <caret line="68" column="24" lean-forward="false" selection-start-line="68" selection-start-column="16" selection-end-line="68" selection-end-column="24" />
           <folding>
             <marker date="1511625211929" expanded="true" signature="168:202" ph="{...}" />
             <marker date="1511625211929" expanded="true" signature="1325:1339" ph="{...}" />

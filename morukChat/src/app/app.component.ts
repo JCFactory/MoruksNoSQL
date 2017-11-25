@@ -9,7 +9,7 @@ const INITIAL_CHANNEL = 'ThaerTube';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit{
+export class AppComponent implements OnInit {
 
   title = 'app';
   results: Object;
@@ -38,14 +38,13 @@ export class AppComponent implements OnInit{
     this.currentChannel = event;
     this.getChat(event);
 
-    console.log(this)
+    console.log(this);
   }
 
 
   sendMessage(message): void {
 
-    let self = this;
-    let body = {
+    const body = {
       channel: this.currentChannel,
       message: message
     };
@@ -53,9 +52,9 @@ export class AppComponent implements OnInit{
 
     this.http.post('http://localhost:3000/channels/message', body).subscribe();
 
-    setTimeout(function () {
-      self.getChat(self.currentChannel);
-    },750);
+    setTimeout( () => {
+      this.getChat(this.currentChannel);
+    }, 750);
 
 
   }

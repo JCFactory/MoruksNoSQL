@@ -73,24 +73,3 @@ util.receiveMessagesFromChannel("Default");
 
 
 
-// todo move to route: channel
-// app.get('/channel/:id', function (req, res) {
-//     var id = req.params.id;
-//     var col = collections['ch_' + id];
-//     console.log('Collection: ', col);
-//     col.find().toArray(function (err, channel) {
-//         res.send(channel);
-//     });
-// });
-
-// todo move to route: channel
-// app.get('/channel/:name/:message', function (req, res) {
-//     var msg = {
-//         name: req.params.name,
-//         message: req.params.message
-//     };
-//     // store name and message in MongoDB
-//     // ch_1_collection.insert(msg);
-//     res.send(msg);
-// });
-
