@@ -77,7 +77,7 @@ Argument wird an Server gesendet
 }
 ```
 
-#### Besonderheiten für Mac-User
+## Besonderheiten für Mac-User
 
 ### Starten von RabbitMQ-Server: 
 --> in das Installations-Verzeichnis von RabbitMQ gehen
@@ -85,7 +85,7 @@ Argument wird an Server gesendet
 Befehl für das Starten des RabbitMQ-Servers:
 ```brew services start rabbitmq```
 
-#### Hinweise
+### Hinweise
 
 Wenn RabbitMQ oder MongoDB mit Homebrew installiert wurden 
 (```brew install rabbitmq```/ ```brew install mongodb```)
