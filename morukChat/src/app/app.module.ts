@@ -5,6 +5,8 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import {HttpClientModule} from '@angular/common/http';
 
+import { AlertModule } from 'ngx-bootstrap';
+
 
 @NgModule({
   declarations: [
@@ -13,6 +15,7 @@ import {HttpClientModule} from '@angular/common/http';
   imports: [
     BrowserModule,
     HttpClientModule,
+    AlertModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

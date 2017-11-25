@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
+import {AlertModule} from 'ngx-bootstrap';
 
 @Component({
   selector: 'app-root',
@@ -9,7 +10,7 @@ import {HttpClient} from '@angular/common/http';
 export class AppComponent {
 
   title = 'app';
-  results: string[];
+  results: Object;
   currentChannel: 'ch_1';
 
 
