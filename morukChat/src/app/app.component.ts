@@ -1,19 +1,21 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AlertModule} from 'ngx-bootstrap';
+
+const INITIAL_CHANNEL = 'ThaerTube';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit{
 
   title = 'app';
   results: Object;
-  currentChannel: 'ch_1';
+  currentChannel = INITIAL_CHANNEL;
   channels = [
-    {name: 'ch_1'},
+    {name: INITIAL_CHANNEL},
     {name: 'General'},
     {name: 'Default'}
     ];
@@ -26,8 +28,8 @@ export class AppComponent {
 
 
   ngOnInit(): void {
-    this.currentChannel = 'ch_1';
-    this.getChat("ch_1");
+    this.currentChannel = 'INITIAL_CHANNEL';
+    this.getChat('INITIAL_CHANNEL');
   }
 
 
@@ -49,7 +51,7 @@ export class AppComponent {
     };
 
 
-    this.http.post("http://localhost:3000/channels/message", body).subscribe();
+    this.http.post('http://localhost:3000/channels/message', body).subscribe();
 
     setTimeout(function () {
       self.getChat(self.currentChannel);
