@@ -12,6 +12,11 @@ export class AppComponent {
   title = 'app';
   results: Object;
   currentChannel: 'ch_1';
+  channels = [
+    {name: 'ch_1'},
+    {name: 'General'},
+    {name: 'Default'}
+    ];
 
 
   // TODO das ganze ist schlecht programmier sollte aber fürn Anfang reichen!
@@ -26,9 +31,10 @@ export class AppComponent {
   }
 
 
-  updateChat($event): void {
-    this.currentChannel = $event;
-    this.getChat($event);
+  updateChat(event): void {
+    console.log(event);
+    this.currentChannel = event;
+    this.getChat(event);
 
     console.log(this)
   }
@@ -36,13 +42,19 @@ export class AppComponent {
 
   sendMessage(message): void {
 
+    let self = this;
     let body = {
       channel: this.currentChannel,
       message: message
     };
 
+
     this.http.post("http://localhost:3000/channels/message", body).subscribe();
-    this.getChat(this.currentChannel);
+
+    setTimeout(function () {
+      self.getChat(self.currentChannel);
+    },750);
+
 
   }
 
@@ -51,6 +63,7 @@ export class AppComponent {
     this.http.get('http://localhost:3000/channels/' + channelName).subscribe(data => {
       // Read the result field from the JSON response.
       this.results = data;
+      console.log(data);
     });
 
   }
