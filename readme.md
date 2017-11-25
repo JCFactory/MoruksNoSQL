@@ -77,4 +77,27 @@ Argument wird an Server gesendet
 }
 ```
 
+#### Besonderheiten für Mac-User
+
+### Starten von RabbitMQ-Server: 
+--> in das Installations-Verzeichnis von RabbitMQ gehen
+``` cd rabbitmq-3.6.14 ```
+Befehl für das Starten des RabbitMQ-Servers:
+```brew services start rabbitmq```
+
+#### Hinweise
+
+Wenn RabbitMQ oder MongoDB mit Homebrew installiert wurden 
+(```brew install rabbitmq```/ ```brew install mongodb```)
+dann liegen die Installationsdateien im Homebrew-Verzeichnis 
+als tar.gz - Dateien. Um diese zu entpacken, hilft der folgende Befehl:
+
+``` gunzip -c rabbitmq-3.6.14.tar.xz | tar xopf - ```
+Bzw.: ``` gunzip -c mongodb-3.4.10.high_sierra.bottle.tar.gz | tar xopf - ```
+
+
+
+
+
+
 
