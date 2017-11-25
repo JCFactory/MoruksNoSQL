@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {AlertModule} from 'ngx-bootstrap';
+import {User} from "./classes/user";
 
 const INITIAL_CHANNEL = 'ThaerTube';
 
@@ -14,6 +15,7 @@ export class AppComponent implements OnInit {
   title = 'app';
   results: Object;
   currentChannel = INITIAL_CHANNEL;
+  user: User;
   channels = [
     {name: INITIAL_CHANNEL},
     {name: 'General'},
