@@ -7,7 +7,8 @@ const SERVERIP = "mongodb://localhost:27017/rabbitDB";
 var db;
 var collections = {
     General: {},
-    Default: {}
+    Default: {},
+    ch_1: {}
 };
 
 module.exports = {
@@ -34,9 +35,15 @@ module.exports = {
                     if (err) throw err;
                     console.log("Collection Default created!");
                 });
+                db.createCollection("ch_1", function (err, res) {
+                    if (err) throw err;
+                    console.log("Collection Default created!");
+                });
 
                 collections.General = db.collection('General');
                 collections.Default = db.collection('Default');
+                collections.ch_1 = db.collection('ch_1');
+
             }
 
         });

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+//var expressWs = require('express-ws')(router);
 
 var util = require('../components/rabbitmq');
 var mongo = require('../components/mongodb');
@@ -26,6 +27,22 @@ router.get('/:id', function (req, res, next) {
 
 
 });
+
+/*
+router.ws('/ws', function (ws, req) {
+
+    ws.send("hello");
+    ws.on('message', function(msg) {
+        ws.send(msg);
+        console.log(msg);
+        setTimeout(function timeout() {
+            ws.send(Date.now());
+        }, 500);
+    });
+});
+
+*/
+
 
 
 /**
