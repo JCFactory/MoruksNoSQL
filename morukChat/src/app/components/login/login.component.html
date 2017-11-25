@@ -1,3 +1,5 @@
-<p>
-  login works!
-</p>
+<div class="login-box">
+  <div class="login-text">Bitte Name eingeben</div>
+  <input type="text" class="login-input" [(ngModel)]="userName" placeholder="Name" required #nameInput>
+  <button class="login-button" (click)="onLogIn()">login</button>
+</div>

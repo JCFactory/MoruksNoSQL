@@ -1,2 +1,4 @@
-<app-login></app-login>
-<app-chat></app-chat>
+<div class="main-content">
+  <app-login *ngIf="!isLoggedIn"></app-login>
+  <app-chat *ngIf="isLoggedIn && user" [user]="user"></app-chat>
+</div>

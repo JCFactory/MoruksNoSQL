@@ -1,7 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-// import {AlertModule} from 'ngx-bootstrap';
 import {User} from "../../classes/user";
+import {LoginService} from "../../services/login.service";
 
 const INITIAL_CHANNEL = 'ThaerTube';
 
@@ -12,28 +12,24 @@ const INITIAL_CHANNEL = 'ThaerTube';
 })
 export class ChatComponent implements OnInit {
 
-  title = 'app';
+  @Input()user: User;
+
   results: Object;
   currentChannel = INITIAL_CHANNEL;
-  user: User;
   channels = [
     {name: INITIAL_CHANNEL},
     {name: 'General'},
     {name: 'Default'}
   ];
 
-
-  // TODO das ganze ist schlecht programmier sollte aber fürn Anfang reichen!
-  constructor(private http: HttpClient) {
-
+  constructor(private http: HttpClient, private loginService: LoginService) {
   }
-
 
   ngOnInit(): void {
     this.currentChannel = 'INITIAL_CHANNEL';
     this.getChat('INITIAL_CHANNEL');
+    console.log('init', this.user);
   }
-
 
   updateChat(event): void {
     console.log(event);
