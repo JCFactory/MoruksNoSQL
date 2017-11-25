@@ -8,7 +8,7 @@ var db;
 var collections = {
     General: {},
     Default: {},
-    ch_1: {}
+    ThaerTube: {}
 };
 
 module.exports = {
@@ -35,14 +35,14 @@ module.exports = {
                     if (err) throw err;
                     console.log("Collection Default created!");
                 });
-                db.createCollection("ch_1", function (err, res) {
+                db.createCollection("ThaerTube", function (err, res) {
                     if (err) throw err;
                     console.log("Collection Default created!");
                 });
 
                 collections.General = db.collection('General');
                 collections.Default = db.collection('Default');
-                collections.ch_1 = db.collection('ch_1');
+                collections.ThaerTube = db.collection('ThaerTube');
 
             }
 

@@ -67,7 +67,7 @@ module.exports = app;
 
 mongo.connect(); // Connect with mongodb
 
-util.receiveMessagesFromChannel("ch_1");
+util.receiveMessagesFromChannel("ThaerTube");
 util.receiveMessagesFromChannel("General");
 util.receiveMessagesFromChannel("Default");
 
