@@ -10,6 +10,7 @@ const INITIAL_CHANNEL = 'ThaerTube';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
+
 export class ChatComponent implements OnInit {
   @ViewChild('messageContainer') messageContainer : ElementRef;
   @Input()user: User;
@@ -29,7 +30,6 @@ export class ChatComponent implements OnInit {
   ngOnInit(): void {
     this.currentChannel = 'INITIAL_CHANNEL';
     this.getChat('INITIAL_CHANNEL');
-    console.log('init', this.user);
   }
 
   updateChat(event): void {
@@ -65,8 +65,10 @@ export class ChatComponent implements OnInit {
     this.http.get('http://localhost:3000/channels/' + channelName).subscribe(data => {
       // Read the result field from the JSON response.
       this.results = data;
-      console.log(data);
-      // setTimeout( () => {this.messageContainer.scroll}, 100)
+      // console.log('get Chat', data);
+      setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight; console.log('onscroll')},
+        50)
+
     });
 
   }
