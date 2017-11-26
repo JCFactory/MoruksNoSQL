@@ -52,11 +52,11 @@ module.exports = {
      * Store messages in mongodb
      * @param message
      * @param channel
+     * @param user
      */
-    storeMessage: function (message, channel, userID) {
-        // TODO Wir müssen hier noch den user übergeben... Am besten nur eine userID?
+    storeMessage: function (message, channel, user) {
 
-        collections[channel].insert({name: 'Thaer', lname: 'Aldefai', message: message})
+        collections[channel].insert({user: user, message: message, date: new Date().getTime()})
     },
     getData: function (channel, callback) {
 
@@ -72,6 +72,5 @@ module.exports = {
                 callback(result);
             }
         })
-
     }
 };

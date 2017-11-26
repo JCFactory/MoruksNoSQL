@@ -66,5 +66,9 @@ typings/
 
 # Batch files for starting Servers
 run_mongo_server.bat
+run_own_mongo.bat
+run_own_mongo_query.bat
 run_rabbitMQ_server.bat
-run_servers.bat
+
+x_run_own_servers.bat
+x_run_servers.bat

@@ -11,7 +11,7 @@ module.exports = {
      * @param channel
      * @param message
      */
-    sendMessageToChannel: function (channel, message) {
+    sendMessageToChannel: function (channel, message, user) {
 
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
@@ -25,6 +25,8 @@ module.exports = {
                 conn.close();
             }, 500);
         });
+
+        mongodb.storeMessage(message, channel, user);
     },
     /**
      * Receive a message and store this in mongodb
@@ -41,7 +43,7 @@ module.exports = {
                     ch.bindQueue(q.queue, channelName, '');
 
                     ch.consume(q.queue, function(msg) {
-                        mongodb.storeMessage(msg.content.toString(), channelName);
+                        // mongodb.storeMessage(msg.content.toString(), channelName);
                         messageUtil.info("Message received in channel '" + channelName +"': " + msg.content.toString());
                     }, {noAck: true});
                 });

@@ -54,6 +54,7 @@ router.post('/message', function (req, res, next) {
 
     var channel = req.body.channel;
     var message = req.body.message;
+    var user = req.body.user;
 
     if (channel == null || message == null) {
         res.json({
@@ -61,7 +62,7 @@ router.post('/message', function (req, res, next) {
             message: "Missing parameter"
         });
     } else {
-        util.sendMessageToChannel(channel, message);
+        util.sendMessageToChannel(channel, message, user);
 
         res.json({
             status: true

@@ -62,15 +62,13 @@ export class ChatComponent implements OnInit {
 
   getChat(channelName): void {
 
-    this.http.get('http://localhost:3000/channels/' + channelName).subscribe(data => {
-      // Read the result field from the JSON response.
-      this.results = data;
-      // console.log('get Chat', data);
-      setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight; console.log('onscroll')},
-        50)
-
-    });
-
+    this.http.get('http://localhost:3000/channels/' + channelName)
+      .subscribe((_data) => {
+        this.results = _data;
+        console.log('get Chat', _data);
+      });
+    setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight},
+      50)
   }
 
 }
