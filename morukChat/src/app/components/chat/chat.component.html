@@ -86,7 +86,7 @@
         <!--<i class="fa fa-instagram" aria-hidden="true"></i>-->
       <!--</div>-->
     </div>
-    <div class="messages">
+    <div class="messages" #messageContainer>
       <ul>
         <li *ngFor="let message of results" class="replies">
           <img src="../../assets/user/thaer.jpg" alt=""/>
@@ -96,7 +96,7 @@
     </div>
     <div class="message-input">
       <div class="wrap">
-        <input #message type="text" placeholder="Schreibe etwas..." (keyup.enter)="sendMessage(message.value)" />
+        <input #message type="text" placeholder="Schreibe etwas..." (keyup.enter)="sendMessage(message.value)" [(ngModel)]="messageInput" />
         <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
         <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true" onclick="sendMessage(message.value)"></i></button>
       </div>
