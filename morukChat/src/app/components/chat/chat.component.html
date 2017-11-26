@@ -59,7 +59,7 @@
     <!--</div>-->
     <div id="contacts">
       <ul>
-        <li *ngFor="let channel of channels" class="contact" (click)="updateChat(channel.name)">
+        <li *ngFor="let channel of channels" class="contact" [ngClass]="{'selected-channel': channel.selected}" (click)="updateChat(channel.name)">
           <div class="wrap">
             <span class="contact-status online"></span>
             <img src="http://emilcarlsson.se/assets/louislitt.png" alt=""/>

@@ -199,7 +199,13 @@
 }
 #frame #sidepanel #profile .wrap #status-options ul li:hover {
   background: #496886;
+
 }
+
+.selected-channel {
+  background: #345aa2;
+}
+
 #frame #sidepanel #profile .wrap #status-options ul li span.status-circle {
   position: absolute;
   width: 10px;

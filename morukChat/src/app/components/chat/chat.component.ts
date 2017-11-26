@@ -19,27 +19,41 @@ export class ChatComponent implements OnInit {
   currentChannel = INITIAL_CHANNEL;
   messageInput = '';
   channels = [
-    {name: INITIAL_CHANNEL},
-    {name: 'General'},
-    {name: 'Default'}
+    {
+      name: INITIAL_CHANNEL,
+      selected: true
+    },
+    {
+      name: 'General',
+      selected: false
+    },
+    {
+      name: 'Default',
+      selected: false
+    }
   ];
 
   constructor(private http: HttpClient, private loginService: LoginService) {
   }
 
   ngOnInit(): void {
-    this.currentChannel = 'INITIAL_CHANNEL';
-    this.getChat('INITIAL_CHANNEL');
+    this.updateChat(INITIAL_CHANNEL);
   }
 
-  updateChat(event): void {
-    console.log(event);
-    this.currentChannel = event;
+  updateChat(event: string): void {
+    // console.log('updateChat', event);
+    if (this.currentChannel !== event) {
+      this.currentChannel = event;
+      this.setChannelSelected(event);
+    }
     this.getChat(event);
-
-    console.log(this);
   }
 
+  setChannelSelected(event: string): void {
+    for (let channel of this.channels) {
+      channel.selected = channel.name === event;
+    }
+  }
 
   sendMessage(message): void {
 
@@ -64,8 +78,10 @@ export class ChatComponent implements OnInit {
 
     this.http.get('http://localhost:3000/channels/' + channelName)
       .subscribe((_data) => {
-        this.results = _data;
-        console.log('get Chat', _data);
+        if (_data) {
+          this.results = _data;
+          console.log('get Chat', _data);
+        }
       });
     setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight},
       50)
