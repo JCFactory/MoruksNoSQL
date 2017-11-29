@@ -10,6 +10,7 @@ import {User} from "../../classes/user";
 export class LoginComponent implements OnInit {
 
   userName: string;
+  password: string;
 
   constructor(private loginService: LoginService) {
   }
@@ -19,9 +20,10 @@ export class LoginComponent implements OnInit {
 
   onLogIn() {
     // debugger
-    if (this.userName) {
+    if (this.userName && this.password) {
       const newUser = new User(this.userName, new Date() );
-      this.loginService.user.next(newUser);
+      this.loginService.userSubject.next(newUser);
+      this.loginService.sendCredentials(this.password, newUser);
       this.loginService.loggedIn.next(true);
     }
   }

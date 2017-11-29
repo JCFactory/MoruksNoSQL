@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     this.loginService.loggedIn.subscribe(_logged => {
       this.isLoggedIn = _logged;
     });
-    this.loginService.user.subscribe(_user => {
+    this.loginService.userSubject.subscribe(_user => {
       this.user = _user;
     });
   }
