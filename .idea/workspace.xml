@@ -3,15 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="973cd8a9-62d7-4032-a614-7866c4f7f31a" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/mongo_data/db/journal/WiredTigerLog.0000000012" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/WiredTiger.wt" afterPath="$PROJECT_DIR$/mongo_data/db/WiredTiger.wt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/collection-0-2277145630989408521.wt" afterPath="$PROJECT_DIR$/mongo_data/db/collection-0-2277145630989408521.wt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/index-1-2277145630989408521.wt" afterPath="$PROJECT_DIR$/mongo_data/db/index-1-2277145630989408521.wt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/sizeStorer.wt" afterPath="$PROJECT_DIR$/mongo_data/db/sizeStorer.wt" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chatssystem-Backend/package.json" afterPath="$PROJECT_DIR$/Chatssystem-Backend/package.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Chatssystem-Backend/routes/users.js" afterPath="$PROJECT_DIR$/Chatssystem-Backend/routes/users.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/WiredTiger.turtle" afterPath="$PROJECT_DIR$/mongo_data/db/WiredTiger.turtle" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongo_data/db/mongod.lock" afterPath="$PROJECT_DIR$/mongo_data/db/mongod.lock" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -399,12 +390,12 @@
       <workItem from="1511609334473" duration="3653000" />
       <workItem from="1511615323487" duration="3294000" />
       <workItem from="1511961965202" duration="1810000" />
-      <workItem from="1511970934495" duration="2260000" />
+      <workItem from="1511970934495" duration="2359000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26359000" />
+    <option name="totallyTimeSpent" value="26458000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1680" height="1050" extended-state="0" />
