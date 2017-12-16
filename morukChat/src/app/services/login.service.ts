@@ -17,28 +17,21 @@ export class LoginService {
     })
   }
 
-  sendCredentials(pw: string, user: User): void {
-    let encryptedPW = shajs('sha256').update({pw}).digest('hex');
-debugger;
+
+  sendCredentials(pw: string): void {
+    let encryptedPW = shajs('sha256').update(pw).digest('hex');
 
     let body = {
-      username: user.name,
-      password: encryptedPW,
-    };
+        username: this.user.name,
+        password: encryptedPW,
+      };
 
-    // if (this.user) {
-    //   body.username = user.name;
-    //   body.password = encryptedPW;
-    // }
-
-    // const body = {
-    //   name: this.user.subscribe(_user => _user.name),
-    //   message: this.user.subscribe(_user),
-    //   user: this.user
-    // };
-
-    console.log('body', body);
-    this.http.post('http://localhost:3000/users/login', body).subscribe();
+    // console.log('body', body);
+    this.http.post('http://localhost:3000/users/login', body).subscribe(_res => {
+      console.log('login post', _res);
+      const result = _res['status'];
+      this.loggedIn.next(result);
+    });
 
   }
 

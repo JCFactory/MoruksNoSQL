@@ -9,22 +9,31 @@ import {User} from "../../classes/user";
 })
 export class LoginComponent implements OnInit {
 
-  userName: string;
-  password: string;
+  userNameInput: string;
+  passwordInput: string;
+  isLoggedIn: boolean;
+  logInTries = 0;
+  showWarning: boolean;
 
   constructor(private loginService: LoginService) {
+    this.loginService.loggedIn.subscribe(_logged => {
+      if (_logged) {
+        this.logInTries = 0;
+      }
+      this.isLoggedIn = _logged;
+      this.showWarning = !this.isLoggedIn && this.logInTries > 0
+    });
   }
 
   ngOnInit() {
   }
 
   onLogIn() {
-    // debugger
-    if (this.userName && this.password) {
-      const newUser = new User(this.userName, new Date() );
+    if (this.userNameInput && this.passwordInput) {
+      this.logInTries++;
+      const newUser = new User(this.userNameInput, new Date() );
       this.loginService.userSubject.next(newUser);
-      this.loginService.sendCredentials(this.password, newUser);
-      this.loginService.loggedIn.next(true);
+      this.loginService.sendCredentials(this.passwordInput);
     }
   }
 

@@ -80,7 +80,7 @@ export class ChatComponent implements OnInit {
       .subscribe((_data) => {
         if (_data) {
           this.results = _data;
-          console.log('get Chat', _data);
+          // console.log('get Chat', _data);
         }
       });
     setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight},
