@@ -8,8 +8,10 @@ var db;
 var collections = {
     General: {},
     Default: {},
-    ThaerTube: {}
+    ThaerTube: {},
+    Custom: {},
 };
+
 
 module.exports = {
 
@@ -17,7 +19,6 @@ module.exports = {
      * Connect mongodb
      */
     connect: function () {
-
         mongo.connect(SERVERIP, function (err, _db) {
 
             if (err) {
@@ -26,19 +27,36 @@ module.exports = {
             } else {
 
                 db = _db;
-                // create collection with same name like message queue
-                db.createCollection("General", function (err, res) {
-                    if (err) throw err;
-                    console.log("Collection General created!");
-                });
-                db.createCollection("Default", function (err, res) {
-                    if (err) throw err;
-                    console.log("Collection Default created!");
-                });
-                db.createCollection("ThaerTube", function (err, res) {
-                    if (err) throw err;
-                    console.log("Collection Default created!");
-                });
+
+                // // create collection with same name like message queue
+                // db.createCollection("General", function (err, res) {
+                //     if (err) throw err;
+                //     console.log("Collection General created!");
+                // });
+                // db.createCollection("Default", function (err, res) {
+                //     if (err) throw err;
+                //     console.log("Collection Default created!");
+                // });
+                // db.createCollection("ThaerTube", function (err, res) {
+                //     if (err) throw err;
+                //     console.log("Collection ThaerTube created!");
+                // });
+
+
+                console.log("Customize your collection!");
+                var stdin = process.openStdin();
+                stdin.addListener("data", function (d) {
+                    // console.log("you entered: [" +
+                    //     d.toString().trim() + "]");
+                        // CustomCol = db.createCollection(stdin.toString()); 
+                        db.createCollection(d.toString(), function (err, res) {
+                            if (err) throw err;
+                            
+                            collections.Custom = db.collection(d.toString());
+                            console.log("Collection " + d.toString().trim() + " created!"); 
+                        });
+                });  
+                                
 
                 collections.General = db.collection('General');
                 collections.Default = db.collection('Default');
@@ -47,7 +65,10 @@ module.exports = {
             }
 
         });
+
     },
+
+
     /**
      * Store messages in mongodb
      * @param message
@@ -56,7 +77,11 @@ module.exports = {
      */
     storeMessage: function (message, channel, user) {
 
-        collections[channel].insert({user: user, message: message, date: new Date().getTime()})
+        collections[channel].insert({
+            user: user,
+            message: message,
+            date: new Date().getTime()
+        })
     },
     getData: function (channel, callback) {
 
@@ -73,4 +98,6 @@ module.exports = {
             }
         })
     }
+
+
 };
