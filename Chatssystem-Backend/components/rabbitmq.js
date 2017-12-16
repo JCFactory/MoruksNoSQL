@@ -51,4 +51,24 @@ module.exports = {
         });
     }
 
+//     // A worker that acks messages only if processed successfully
+// function startWorker() {
+//     amqpConn.createChannel(function(err, ch) {
+//       if (closeOnErr(err)) return;
+//       ch.on("error", function(err) {
+//         console.error("[AMQP] channel error", err.message);
+//       });
+//       ch.on("close", function() {
+//         console.log("[AMQP] channel closed");
+//       });
+  
+//       ch.prefetch(10);
+//       ch.assertQueue("jobs", { durable: true }, function(err, _ok) {
+//         if (closeOnErr(err)) return;
+//         ch.consume("jobs", processMsg, { noAck: false });
+//         console.log("Worker is started");
+//       });
+//     });
+//   }
+
 };
