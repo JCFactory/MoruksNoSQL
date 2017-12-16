@@ -16,6 +16,7 @@
     "jade": "~1.11.0",
     "mongodb": "^2.2.33",
     "morgan": "~1.9.0",
+    "mysql": "^2.15.0",
     "nodejs-websocket": "^1.7.1",
     "nodemon": "^1.12.1",
     "serve-favicon": "~2.4.5",
