@@ -43,28 +43,15 @@
               <p>Offline</p></li>
           </ul>
         </div>
-        <!--<div id="expanded">-->
-          <!--<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="mikeross"/>-->
-          <!--<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="ross81"/>-->
-          <!--<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="mike.ross"/>-->
-        <!--</div>-->
       </div>
     </div>
 
-    
-    <!--<div id="search">-->
-      <!--<label for=""><i class="fa fa-search" aria-hidden="true"></i></label>-->
-      <!--<input type="text" placeholder="Search contacts..."/>-->
-    <!--</div>-->
     <div id="contacts">
       <ul>
         <li *ngFor="let channel of channels" class="contact" [ngClass]="{'selected-channel': channel.selected}" (click)="updateChat(channel.name)">
           <div class="wrap">
             <span class="contact-status online"></span>
-            <img src="http://emilcarlsson.se/assets/louislitt.png" alt=""/>
+            <img src="../../assets/user/no_profile.jpeg" alt=""/>
             <div class="meta">
               <p class="name">{{channel.name}}</p>
               <p class="preview"></p>
@@ -88,12 +75,7 @@
   <div class="content">
     <div class="contact-profile">
       <img src="../../assets/user/erdogan.jpg" alt=""/>
-      <p>Der Recep</p>
-      <!--<div class="social-media">-->
-        <!--<i class="fa fa-facebook" aria-hidden="true"></i>-->
-        <!--<i class="fa fa-twitter" aria-hidden="true"></i>-->
-        <!--<i class="fa fa-instagram" aria-hidden="true"></i>-->
-      <!--</div>-->
+      <p>Recep</p>
     </div>
     <div class="messages" #messageContainer>
       <ul>
