@@ -2,6 +2,7 @@ import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from "../../classes/user";
 import {LoginService} from "../../services/login.service";
+import {UserService} from "../../services/user.service";
 
 const INITIAL_CHANNEL = 'ThaerTube';
 
@@ -33,7 +34,8 @@ export class ChatComponent implements OnInit {
     }
   ];
 
-  constructor(private http: HttpClient, private loginService: LoginService) {
+  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService) {
+
   }
 
   ngOnInit(): void {
@@ -87,4 +89,24 @@ export class ChatComponent implements OnInit {
       50)
   }
 
+  showAllUsers() {
+    let usersList;
+    this.http.get('http://localhost:3000/users/')
+      .subscribe((_data: string[]) => {
+        if (_data) {
+          this.usersService.usersList.next(_data);
+        }
+      });
+
+    // if (confirm("Gruppe erstellen") == true) {
+    //   txt = "Ja";
+    //   if (confirm("Kontakte auswählen") == true) {
+    //     this.http.get('http://localhost:3000/users', user).subscribe(data => {
+    //       console.log(data);
+    //     });
+    //   }
+    // } else {
+    //   txt = "Abbrechen";
+    // }
+  }
 }

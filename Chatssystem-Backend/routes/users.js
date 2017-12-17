@@ -14,8 +14,6 @@ var connection = mysql.createConnection({
 /* GET users listing. */
 router.get('/', function (req, res, next) {
 
-    connection.connect();
-
     connection.query('SELECT username FROM user', function (error, results, fields) {
         if (!error) {
             res.json(results);
@@ -23,9 +21,6 @@ router.get('/', function (req, res, next) {
             throw error;
         }
     });
-
-    connection.end();
-
 });
 
 
