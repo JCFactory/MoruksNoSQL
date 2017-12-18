@@ -1,4 +1,4 @@
-import {Component, ElementRef, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from "../../classes/user";
 import {LoginService} from "../../services/login.service";
@@ -14,7 +14,8 @@ const INITIAL_CHANNEL = 'ThaerTube';
 
 export class ChatComponent implements OnInit {
   @ViewChild('messageContainer') messageContainer : ElementRef;
-  @Input()user: User;
+  @Input() user: User;
+  @Output() openUserList = new EventEmitter();
 
   results: Object;
   currentChannel = INITIAL_CHANNEL;
@@ -90,23 +91,14 @@ export class ChatComponent implements OnInit {
   }
 
   showAllUsers() {
-    let usersList;
     this.http.get('http://localhost:3000/users/')
-      .subscribe((_data: string[]) => {
-        if (_data) {
-          this.usersService.usersList.next(_data);
+      .subscribe((data) => {
+        debugger;
+        if (data) {
+          this.userService.userList.next(data);
         }
+        this.openUserList.emit(true);
       });
-
-    // if (confirm("Gruppe erstellen") == true) {
-    //   txt = "Ja";
-    //   if (confirm("Kontakte auswählen") == true) {
-    //     this.http.get('http://localhost:3000/users', user).subscribe(data => {
-    //       console.log(data);
-    //     });
-    //   }
-    // } else {
-    //   txt = "Abbrechen";
-    // }
   }
+
 }

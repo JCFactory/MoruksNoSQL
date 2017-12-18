@@ -3,16 +3,16 @@ import {Subject} from "rxjs/Subject";
 import * as shajs from 'sha.js';
 import {HttpClient} from "@angular/common/http";
 import {User} from "../classes/user";
+import {UserService} from "./user.service";
 
 @Injectable()
 export class LoginService {
 
   loggedIn: Subject<boolean> = new Subject();
-  userSubject: Subject<any> = new Subject();
   user: User;
 
-  constructor(private http: HttpClient) {
-    this.userSubject.subscribe(_user => {
+  constructor(private http: HttpClient, private userService: UserService) {
+    this.userService.userSubject.subscribe(_user => {
       this.user = _user;
     })
   }

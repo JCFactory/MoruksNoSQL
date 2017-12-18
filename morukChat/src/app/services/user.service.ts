@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import {User} from "../classes/user";
 import {Subject} from "rxjs/Subject";
+import {User} from "../classes/user";
 
 @Injectable()
 export class UserService {
 
-
-  userList: Subject<string[]>;
+  userSubject: Subject<any> = new Subject();
+  user: User;
+  userList: Subject<any> = new Subject();
 
   constructor() {
-
+    this.userList.subscribe(_res => {console.log('in userService', _res)})
   }
 
 }

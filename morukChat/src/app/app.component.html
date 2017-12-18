@@ -1,4 +1,5 @@
 <div class="main-content">
   <app-login *ngIf="!isLoggedIn"></app-login>
-  <app-chat *ngIf="isLoggedIn && user" [user]="user"></app-chat>
+  <app-chat *ngIf="isLoggedIn && user" [user]="user" (openUserList)="openUserList($event)"></app-chat>
+  <!--<app-user-list *ngIf="showUserList"></app-user-list>-->
 </div>
