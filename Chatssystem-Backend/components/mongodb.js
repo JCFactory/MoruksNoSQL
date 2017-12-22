@@ -2,7 +2,7 @@ var mongo = require('mongodb').MongoClient;
 var messageUtil = require('./message');
 
 
-const SERVERIP = "mongodb://localhost:27017/rabbitDB";
+const SERVERIP = "mongodb://vpstwo.iiptvpanel.com:27017/rabbitDB";
 
 var db;
 var collections = {

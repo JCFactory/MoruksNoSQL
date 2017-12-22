@@ -1,8 +1,10 @@
 var amqp = require('amqplib/callback_api');
 var mongodb = require('./mongodb');
 var messageUtil = require('./message');
+var myModule = require('../components/connectionHandler');
 
 const SERVERIP = "amqp://localhost";
+const EXCHANGE = "NoSQL-Chat";
 
 module.exports = {
 
@@ -16,9 +18,9 @@ module.exports = {
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
-                ch.assertExchange(channel, 'fanout', {durable: false});
-                ch.publish(channel, '', new Buffer(message));
-                messageUtil.info("Sent: " + message);
+                ch.assertExchange(EXCHANGE, 'fanout', {durable: false});
+                ch.publish(EXCHANGE, channel, new Buffer(message));
+                messageUtil.info("Sent:" + channel + " " + message);
             });
 
             setTimeout(function () {
@@ -31,44 +33,81 @@ module.exports = {
     /**
      * Receive a message and store this in mongodb
      */
-    receiveMessagesFromChannel: function(channelName){
+    receiveMessagesFromChannel: function (channelName, username) {
 
-        amqp.connect(SERVERIP, function(err, conn) {
-            conn.createChannel(function(err, ch) {
 
-                ch.assertExchange(channelName, 'fanout', {durable: false});
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
 
-                ch.assertQueue('', {exclusive: true}, function(err, q) {
+
+                ch.assertExchange(EXCHANGE, 'fanout', {durable: true});
+
+                ch.assertQueue(channelName, {exclusive: false}, function (err, q) {
                     messageUtil.info("Waiting for messages. To exit press CTRL+C");
-                    ch.bindQueue(q.queue, channelName, '');
+                    ch.bindQueue(q.queue, EXCHANGE, channelName);
 
-                    ch.consume(q.queue, function(msg) {
+
+                    myModule.connections = conn;
+
+                    ch.consume(q.queue, function (msg) {
+
                         // mongodb.storeMessage(msg.content.toString(), channelName);
-                        messageUtil.info("Message received in channel '" + channelName +"': " + msg.content.toString());
-                    }, {noAck: true});
+                        messageUtil.info(username + " received a message  '" + channelName + "': " + msg.content.toString());
+                    }, {consumerTag: username, noAck: false});
+
+                });
+            });
+        });
+    },
+    initQueue: function (queuename, username) {
+
+
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
+
+                ch.assertExchange(queuename, 'fanout', {durable: true});
+
+                ch.assertQueue(username, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, queuename, username);
+                    messageUtil.info("Initalize Queue " + queuename + " for user: " + username);
+                });
+            });
+        });
+    },
+    receiveMessage: function (channelname, username, socket) {
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
+
+                ch.assertExchange(channelname, 'fanout', {durable: true});
+
+                ch.assertQueue(username, {exclusive: false}, function (err, q) {
+                    messageUtil.info("Waiting for messages. To exit press CTRL+C");
+                    ch.bindQueue(q.queue, channelname, username);
+
+                    ch.consume(q.queue, function (msg) {
+
+                        // mongodb.storeMessage(msg.content.toString(), channelName);
+                        messageUtil.info(username + " received a message  '" + channelname + "': " + msg.content.toString());
+
+                        // If a new message is available, send it to the user/client
+                        socket.emit("newmessage", {
+                            message: msg.content.toString()
+                        });
+                        ch.ack(msg); // Set message as already read
+
+                        // If user closes page or chat...
+                        socket.on('disconnect', function () {
+                            console.log("Websocket wurde beendet");
+                            ch.close();
+                        });
+
+                    }, {noAck: false});
+
                 });
             });
         });
     }
-
-//     // A worker that acks messages only if processed successfully
-// function startWorker() {
-//     amqpConn.createChannel(function(err, ch) {
-//       if (closeOnErr(err)) return;
-//       ch.on("error", function(err) {
-//         console.error("[AMQP] channel error", err.message);
-//       });
-//       ch.on("close", function() {
-//         console.log("[AMQP] channel closed");
-//       });
-  
-//       ch.prefetch(10);
-//       ch.assertQueue("jobs", { durable: true }, function(err, _ok) {
-//         if (closeOnErr(err)) return;
-//         ch.consume("jobs", processMsg, { noAck: false });
-//         console.log("Worker is started");
-//       });
-//     });
-//   }
-
 };

@@ -10,21 +10,18 @@ var connection = mysql.createConnection({
     password: 'password',
     database: 'nosql'
 });
+connection.connect();
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
 
-    connection.connect();
-
     connection.query('SELECT username FROM user', function (error, results, fields) {
-        if (!error) {
-            res.json(results);
-        } else {
+        if (error) {
             throw error;
+        } else {
+            res.json(results);
         }
     });
-
-    connection.end();
 
 });
 
@@ -42,8 +39,6 @@ router.post('/new', function (req, res, next) {
             message: "Missing parameter"
         });
     } else {
-
-
 
         var hashedPassword = SHA256(password);
 
