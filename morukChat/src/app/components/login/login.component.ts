@@ -19,7 +19,7 @@ export class LoginComponent implements OnInit {
   }
 
   onLogIn() {
-    // debugger
+
     if (this.userName && this.password) {
       const newUser = new User(this.userName, new Date() );
       this.loginService.userSubject.next(newUser);

@@ -19,7 +19,6 @@ export class LoginService {
 
   sendCredentials(pw: string, user: User): void {
     let encryptedPW = shajs('sha256').update({pw}).digest('hex');
-debugger;
 
     let body = {
       username: user.name,
