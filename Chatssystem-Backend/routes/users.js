@@ -53,6 +53,7 @@ router.post('/new', function (req, res, next) {
         var query = connection.query('INSERT INTO user SET ?', userData, function (error, results, fields) {
             if (error) {
                 throw error;
+                res.json(error);
             }
 
 
@@ -85,6 +86,7 @@ router.get('/:username', function (req, res, next) {
     connection.query('SELECT id, firstname, lastname FROM user WHERE username = ?', username, function (error, results, fields) {
         if (error) {
             throw error;
+            res.json(error);
         } else {
             if (results.length > 0) {
                 res.json({

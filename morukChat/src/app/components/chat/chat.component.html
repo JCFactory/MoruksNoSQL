@@ -5,7 +5,18 @@
   src='//production-assets.codepen.io/assets/editor/live/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js'></script>
 <script
   src='//production-assets.codepen.io/assets/editor/live/css_live_reload_init-2c0dc5167d60a5af3ee189d570b1835129687ea2a61bee3513dee3a50c115a77.js'></script>
-<meta charset='UTF-8'>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css">
+
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.6/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"></script>
+  <meta charset='UTF-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <link rel="shortcut icon" type="image/x-icon"
       href="//production-assets.codepen.io/assets/favicon/favicon-8ea04875e70c4b0bb41da869e81236e54394d63638a1ef12fa558a4a835f1164.ico"/>
@@ -30,6 +41,7 @@
       <div class="wrap">
         <img id="profile-img" src="../../assets/user/thaer.jpg" class="online" alt=""/>
         <p>{{user.name}}</p>
+
         <!--<i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>-->
         <div id="status-options">
           <ul>
@@ -43,14 +55,6 @@
               <p>Offline</p></li>
           </ul>
         </div>
-        <!--<div id="expanded">-->
-          <!--<label for="twitter"><i class="fa fa-facebook fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="mikeross"/>-->
-          <!--<label for="twitter"><i class="fa fa-twitter fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="ross81"/>-->
-          <!--<label for="twitter"><i class="fa fa-instagram fa-fw" aria-hidden="true"></i></label>-->
-          <!--<input name="twitter" type="text" value="mike.ross"/>-->
-        <!--</div>-->
       </div>
     </div>
 
@@ -74,26 +78,21 @@
       </ul>
     </div>
 
-    <div>
-      <button class="createNewChannel" id="name">
-        <span class="glyphicon glyphicon-plus"></span>
-      </button>
+
+    <div id="bottom-bar" >
+        <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
+      <button type="button" class="btn btn-primary" (click)="buttonClicked()"><i class="fa fa-users" aria-hidden="true"></i>
+          <span>Gruppe</span></button>
+          <element ng-if="expression"></element>
+         <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
     </div>
 
-    <div id="bottom-bar">
-      <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>Add contact</span></button>
-      <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>Settings</span></button>
-    </div>
+
   </div>
   <div class="content">
     <div class="contact-profile">
       <img src="../../assets/user/erdogan.jpg" alt=""/>
       <p>Der Recep</p>
-      <!--<div class="social-media">-->
-        <!--<i class="fa fa-facebook" aria-hidden="true"></i>-->
-        <!--<i class="fa fa-twitter" aria-hidden="true"></i>-->
-        <!--<i class="fa fa-instagram" aria-hidden="true"></i>-->
-      <!--</div>-->
     </div>
     <div class="messages" #messageContainer>
       <ul>
@@ -115,4 +114,3 @@
 <script
   src='//production-assets.codepen.io/assets/common/stopExecutionOnTimeout-b2a7b3fe212eaa732349046d8416e00a9dec26eb7fd347590fbced3ab38af52e.js'></script>
 <script src='https://code.jquery.com/jquery-2.2.4.min.js'></script>
-
