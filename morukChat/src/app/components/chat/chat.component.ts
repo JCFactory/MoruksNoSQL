@@ -45,6 +45,18 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
     this.updateChat(INITIAL_CHANNEL);
+
+
+    // Websocket mit username und channel registrieren...
+    socket.emit("connect-chat", { username: 'steffen'});
+
+    // Hier wird die Nachricht ankommen...
+
+    socket.on('new-message', function (data) {
+      // Das hier dann irgendwie in die liste/fenster pushen...
+      console.log("Neue Nachricht");
+      console.log(data);
+    })
   }
 
   updateChat(event: string): void {
@@ -78,6 +90,18 @@ export class ChatComponent implements OnInit {
   }
 
   sendMessage(message): void {
+
+    var data = {
+      username: 'username',
+      channelname: 'channelname',
+      message: message
+    };
+
+    console.log(socket);
+
+    socket.emit('new-message', data);
+
+
 
     // socket.emit('chat message', 'TEST-test-TEST');
 
