@@ -42,7 +42,7 @@ function render(data){
           </div>`);
   }).join(" ")
 */
-  document.getElementById('messages').innerHTML = data.message;
+  document.getElementById('messages').innerHTML = data.data.message;
 }
 
 function addMessage(e){

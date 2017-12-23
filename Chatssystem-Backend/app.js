@@ -16,6 +16,8 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var channels = require('./routes/channels');
 var chatmessage = require('./routes/chatmessage');
+var history = require('./routes/history');
+
 
 
 var util = require('./components/rabbitmq');
@@ -26,7 +28,7 @@ connections = [];
 
 io.on('connect', function (socket) {
     connections.push(socket);
-    console.log("Websocket connection opened: " + connections.length)
+    console.log("Websocket connection opened: " + connections.length);
 
     socket.on('disconnect', function (socket) {
         connections.splice(connections.indexOf(socket), 1);
@@ -68,6 +70,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/channels', channels);
 app.use('/chatmessage', chatmessage);
+app.use('/history', history);
 
 
 // Catch 404 and forward to error handler

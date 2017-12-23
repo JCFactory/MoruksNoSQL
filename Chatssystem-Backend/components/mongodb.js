@@ -2,7 +2,7 @@ var mongo = require('mongodb').MongoClient;
 var messageUtil = require('./message');
 
 
-const SERVERIP = "mongodb://vpstwo.iiptvpanel.com:27017/rabbitDB";
+const SERVERIP = "mongodb://localhost:27017/rabbitDB";
 
 var db;
 var collections = {
@@ -28,43 +28,49 @@ module.exports = {
 
                 db = _db;
 
-                // // create collection with same name like message queue
-                // db.createCollection("General", function (err, res) {
-                //     if (err) throw err;
-                //     console.log("Collection General created!");
-                // });
-                // db.createCollection("Default", function (err, res) {
-                //     if (err) throw err;
-                //     console.log("Collection Default created!");
-                // });
-                // db.createCollection("ThaerTube", function (err, res) {
-                //     if (err) throw err;
-                //     console.log("Collection ThaerTube created!");
-                // });
+
+                // Create default collections
+                db.createCollection("General", function (err, res) {
+                    if (err) throw err;
+                    //console.log("Collection General created!");
+                });
+                db.createCollection("Default", function (err, res) {
+                    if (err) throw err;
+                    //console.log("Collection Default created!");
+                });
 
 
+/*
                 console.log("Customize your collection!");
                 var stdin = process.openStdin();
                 stdin.addListener("data", function (d) {
-                        db.createCollection(d.toString(), function (err, res) {
-                            if (err) throw err;
-                            collections.Custom = db.collection(d.toString());
-                            console.log("Collection " + d.toString().trim() + " created!"); 
-                        });
-                });  
-                                
+                    db.createCollection(d.toString(), function (err, res) {
+                        if (err) throw err;
+                        collections.Custom = db.collection(d.toString());
+                        console.log("Collection " + d.toString().trim() + " created!");
+                    });
+                });
+
 
                 collections.General = db.collection('General');
                 collections.Default = db.collection('Default');
                 collections.ThaerTube = db.collection('ThaerTube');
-
+ */
             }
 
         });
 
     },
+    save: function (collection, data) {
 
-
+        db.collection(collection).insertOne(data, function (err, res) {
+            if (err) {
+                throw err;
+            } else {
+                console.log("1 document inserted");
+            }
+        });
+    },
     /**
      * Store messages in mongodb
      * @param message
