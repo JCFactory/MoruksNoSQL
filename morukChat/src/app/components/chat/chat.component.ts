@@ -1,9 +1,14 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {User} from "../../classes/user";
 import {LoginService} from "../../services/login.service";
 import {UserService} from "../../services/user.service";
 import {templateVisitAll} from "@angular/compiler";
+import {Observable} from "rxjs/Observable";
 
 
 const INITIAL_CHANNEL = 'ThaerTube';
@@ -20,7 +25,7 @@ export class ChatComponent implements OnInit {
   @Input() user: User;
   @Output() openUserList = new EventEmitter();
 
-  results: Object;
+  history: any;
   currentChannel = INITIAL_CHANNEL;
   messageInput = '';
   channels = [
@@ -38,49 +43,37 @@ export class ChatComponent implements OnInit {
     }
   ];
 
-  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService) {
+  constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
     // this.allUsers = this.http.get('http://localhost:3000/users');
+    this.history = [];
   }
 
   ngOnInit(): void {
-    this.updateChat(INITIAL_CHANNEL);
-
+    // this.updateChat(INITIAL_CHANNEL);
 
     // Websocket mit username und channel registrieren...
-    socket.emit("connect-chat", { username: 'steffen'});
+    socket.emit("connect-chat", { username: this.user.name});
 
     // Hier wird die Nachricht ankommen...
-
-    socket.on('new-message', function (data) {
+    socket.on('new-message', (data) => {
       // Das hier dann irgendwie in die liste/fenster pushen...
-      console.log("Neue Nachricht");
       console.log(data);
+      this.addToHistory(data.message).subscribe(_hist => {
+        // console.log(_hist);
+        this.messageInput = '';
+        this.changeDetector.detectChanges();
+
+      });
     })
   }
 
-  updateChat(event: string): void {
-    // console.log('updateChat', event);
-    if (this.currentChannel !== event) {
-      this.currentChannel = event;
-      this.setChannelSelected(event);
-    }
-    this.getChat(event);
-  }
 
-  buttonClicked() {
-    var txt;
-    var user;
-    if (confirm("Gruppe erstellen") == true) {
-      txt = "Ja";
-      if (confirm("Kontakte auswählen") == true) {
-        this.http.get('http://localhost:3000/users', user).subscribe(data => {
-          console.log(data);
-        });
-      }
-    } else {
-      txt = "Abbrechen";
-    }
+  addToHistory(data): Observable<any> {
+    return Observable.create(obs => {
+      this.history.push(data);
+      obs.next(this.history);
+    });
   }
 
   setChannelSelected(event: string): void {
@@ -92,60 +85,14 @@ export class ChatComponent implements OnInit {
   sendMessage(message): void {
 
     var data = {
-      username: 'username',
+      username: this.user.name,
       channelname: 'channelname',
       message: message
     };
 
-    console.log(socket);
+    // console.log('socket:', socket);
 
     socket.emit('new-message', data);
-
-
-
-    // socket.emit('chat message', 'TEST-test-TEST');
-
-    // const body = {
-    //   channel: this.currentChannel,
-    //   message: message,
-    //   user: this.user
-    // };
-    //
-    // console.log(body);
-    // this.http.post('http://localhost:3000/channels/message', body).subscribe();
-    //
-    // this.messageInput = '';
-    //
-    // setTimeout(() => {
-    //   this.getChat(this.currentChannel);
-    // }, 750);
   }
-
-  getChat(channelName): void {
-
-    this.http.get('http://localhost:3000/channels/' + channelName)
-      .subscribe((_data) => {
-        if (_data) {
-          this.results = _data;
-          // console.log('get Chat', _data);
-        }
-      });
-    setTimeout(() => {
-        this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight
-      },
-      50)
-  }
-
-  showAllUsers() {
-    this.http.get('http://localhost:3000/users/')
-      .subscribe((data) => {
-        // debugger;
-        if (data) {
-          this.userService.userList.next(data);
-        }
-        this.openUserList.emit(true);
-      });
-  }
-
 }
 

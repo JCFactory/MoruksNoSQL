@@ -93,9 +93,10 @@
     </div>
     <div class="messages" #messageContainer>
       <ul>
-        <li *ngFor="let message of results" class="replies">
+        <li *ngFor="let message of history" class="replies">
           <img src="../../assets/user/thaer.jpg" alt=""/>
-          <p><b>{{message.user.name}}:</b> {{message.message}}</p>
+          <!--<p><b>{{message.user.name}}:</b> {{message}}</p>-->
+          <p><b></b> {{message}}</p>
         </li>
       </ul>
     </div>
