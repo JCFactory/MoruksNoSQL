@@ -59,7 +59,7 @@ export class ChatComponent implements OnInit {
     socket.on('new-message', (data) => {
       // Das hier dann irgendwie in die liste/fenster pushen...
       console.log(data);
-      this.addToHistory(data.message).subscribe(_hist => {
+      this.addToHistory(data).subscribe(_hist => {
         // console.log(_hist);
         this.messageInput = '';
         this.changeDetector.detectChanges();
