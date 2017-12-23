@@ -3,6 +3,8 @@ import {HttpClient} from '@angular/common/http';
 import {User} from "../../classes/user";
 import {LoginService} from "../../services/login.service";
 import {UserService} from "../../services/user.service";
+import {templateVisitAll} from "@angular/compiler";
+
 
 const INITIAL_CHANNEL = 'ThaerTube';
 
@@ -77,20 +79,22 @@ export class ChatComponent implements OnInit {
 
   sendMessage(message): void {
 
-    const body = {
-      channel: this.currentChannel,
-      message: message,
-      user: this.user
-    };
+    // socket.emit('chat message', 'TEST-test-TEST');
 
-    console.log(body);
-    this.http.post('http://localhost:3000/channels/message', body).subscribe();
-
-    this.messageInput = '';
-
-    setTimeout(() => {
-      this.getChat(this.currentChannel);
-    }, 750);
+    // const body = {
+    //   channel: this.currentChannel,
+    //   message: message,
+    //   user: this.user
+    // };
+    //
+    // console.log(body);
+    // this.http.post('http://localhost:3000/channels/message', body).subscribe();
+    //
+    // this.messageInput = '';
+    //
+    // setTimeout(() => {
+    //   this.getChat(this.currentChannel);
+    // }, 750);
   }
 
   getChat(channelName): void {
