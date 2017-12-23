@@ -18,7 +18,6 @@ var channels = require('./routes/channels');
 var chatmessage = require('./routes/chatmessage');
 
 
-
 var util = require('./components/rabbitmq');
 var mongo = require('./components/mongodb');
 
@@ -36,16 +35,13 @@ io.on('connect', function (socket) {
 });
 
 
-
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.io = io;
 
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(function(req, res, next){
+app.use(function (req, res, next) {
     res.io = io;
     next();
 });
@@ -72,9 +68,6 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/channels', channels);
 app.use('/chatmessage', chatmessage);
-
-
-
 
 
 // Catch 404 and forward to error handler
@@ -105,27 +98,42 @@ mongo.connect(); // Connect with mongodb
 
 
 /*
-Websockets
+ Websockets
  */
 var iosa = io.of('/chatmessage');
 iosa.on('connection', function (socket) {
 
-    socket.on('newmessage', function (data) {
-        console.log("Neue Nachricht: " + data);
+    var username = "unknown";
+    var channelname = "General";
+
+    socket.on('connect-chat', function (data) {
+
+        username = data.username;
+        console.log(data.username + " logged in");
+
+        // User sends a new message
+        socket.on('new-message', function (data) {
+            console.log("Neue Nachricht: " + channelname + " " + data.message + " " + username);
+            util.sendMessageToChannel(channelname, data.message, username);
+        });
+
+        util.receiveMessage(channelname, username, socket);
     });
 
-    util.receiveMessage("General", "inan", socket);
-
 });
-
 
 
 // Init Queue
 
 const GENERAL = "General";
-var userList =  ["inan", "steffen", "jacky"];
+const DEFAULT = "Default";
+var userList = ["inan", "steffen", "jacky"];
 
 
 userList.forEach(function (username) {
     util.initQueue(GENERAL, username);
+});
+
+userList.forEach(function (username) {
+    util.initQueue(DEFAULT, username);
 });

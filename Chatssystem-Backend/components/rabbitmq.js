@@ -18,9 +18,9 @@ module.exports = {
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
-                ch.assertExchange(EXCHANGE, 'fanout', {durable: false});
-                ch.publish(EXCHANGE, channel, new Buffer(message));
-                messageUtil.info("Sent:" + channel + " " + message);
+                ch.assertExchange(channel, 'fanout', {durable: true});
+                ch.publish(channel, '', new Buffer(message));
+                messageUtil.info("Sent:" + channel + " " + message + " " + user);
             });
 
             setTimeout(function () {
@@ -28,7 +28,7 @@ module.exports = {
             }, 500);
         });
 
-        mongodb.storeMessage(message, channel, user);
+        //mongodb.storeMessage(message, channel, user);
     },
     /**
      * Receive a message and store this in mongodb
@@ -84,7 +84,7 @@ module.exports = {
                 ch.assertExchange(channelname, 'fanout', {durable: true});
 
                 ch.assertQueue(username, {exclusive: false}, function (err, q) {
-                    messageUtil.info("Waiting for messages. To exit press CTRL+C");
+                    messageUtil.info("Warten auf Nachricht User: " + username + " auf Channel " + channelname);
                     ch.bindQueue(q.queue, channelname, username);
 
                     ch.consume(q.queue, function (msg) {
@@ -93,7 +93,7 @@ module.exports = {
                         messageUtil.info(username + " received a message  '" + channelname + "': " + msg.content.toString());
 
                         // If a new message is available, send it to the user/client
-                        socket.emit("newmessage", {
+                        socket.emit("new-message", {
                             message: msg.content.toString()
                         });
                         ch.ack(msg); // Set message as already read
