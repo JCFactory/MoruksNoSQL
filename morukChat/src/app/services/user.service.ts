@@ -10,7 +10,7 @@ export class UserService {
   userList: Subject<any> = new Subject();
 
   constructor() {
-    this.userList.subscribe(_res => {console.log('in userService', _res)})
+    // this.userList.subscribe(_res => {console.log('in userService', _res)})
   }
 
 }

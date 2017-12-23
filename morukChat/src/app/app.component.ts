@@ -14,7 +14,6 @@ export class AppComponent implements OnInit {
 
   isLoggedIn = false;
   user: User;
-  showUserList = false;
 
   constructor(private loginService: LoginService, private userService: UserService) {
     this.loginService.loggedIn.subscribe(_logged => {
@@ -28,9 +27,4 @@ export class AppComponent implements OnInit {
   ngOnInit() {
 
   }
-
-  openUserList(isOpen) {
-    this.showUserList = isOpen;
-  }
-
 }

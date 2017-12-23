@@ -93,7 +93,7 @@ export class ChatComponent implements OnInit {
   showAllUsers() {
     this.http.get('http://localhost:3000/users/')
       .subscribe((data) => {
-        debugger;
+        // debugger;
         if (data) {
           this.userService.userList.next(data);
         }
