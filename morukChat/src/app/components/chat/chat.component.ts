@@ -13,7 +13,8 @@ const INITIAL_CHANNEL = 'ThaerTube';
 })
 
 export class ChatComponent implements OnInit {
-  @ViewChild('messageContainer') messageContainer : ElementRef;
+
+  @ViewChild('messageContainer') messageContainer: ElementRef;
   @Input() user: User;
   @Output() openUserList = new EventEmitter();
 
@@ -37,6 +38,7 @@ export class ChatComponent implements OnInit {
 
   constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService) {
 
+    // this.allUsers = this.http.get('http://localhost:3000/users');
   }
 
   ngOnInit(): void {
@@ -50,6 +52,21 @@ export class ChatComponent implements OnInit {
       this.setChannelSelected(event);
     }
     this.getChat(event);
+  }
+
+  buttonClicked() {
+    var txt;
+    var user;
+    if (confirm("Gruppe erstellen") == true) {
+      txt = "Ja";
+      if (confirm("Kontakte auswählen") == true) {
+        this.http.get('http://localhost:3000/users', user).subscribe(data => {
+          console.log(data);
+        });
+      }
+    } else {
+      txt = "Abbrechen";
+    }
   }
 
   setChannelSelected(event: string): void {
@@ -71,10 +88,9 @@ export class ChatComponent implements OnInit {
 
     this.messageInput = '';
 
-    setTimeout( () => {
+    setTimeout(() => {
       this.getChat(this.currentChannel);
     }, 750);
-
   }
 
   getChat(channelName): void {
@@ -86,7 +102,9 @@ export class ChatComponent implements OnInit {
           // console.log('get Chat', _data);
         }
       });
-    setTimeout( () => {this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight},
+    setTimeout(() => {
+        this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight
+      },
       50)
   }
 
@@ -102,3 +120,4 @@ export class ChatComponent implements OnInit {
   }
 
 }
+

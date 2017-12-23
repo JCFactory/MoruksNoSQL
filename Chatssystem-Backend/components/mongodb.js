@@ -2,7 +2,7 @@ var mongo = require('mongodb').MongoClient;
 var messageUtil = require('./message');
 
 
-const SERVERIP = "mongodb://localhost:27017/rabbitDB";
+const SERVERIP = "mongodb://vpstwo.iiptvpanel.com:27017/rabbitDB";
 
 var db;
 var collections = {
@@ -46,12 +46,8 @@ module.exports = {
                 console.log("Customize your collection!");
                 var stdin = process.openStdin();
                 stdin.addListener("data", function (d) {
-                    // console.log("you entered: [" +
-                    //     d.toString().trim() + "]");
-                        // CustomCol = db.createCollection(stdin.toString()); 
                         db.createCollection(d.toString(), function (err, res) {
                             if (err) throw err;
-                            
                             collections.Custom = db.collection(d.toString());
                             console.log("Collection " + d.toString().trim() + " created!"); 
                         });
