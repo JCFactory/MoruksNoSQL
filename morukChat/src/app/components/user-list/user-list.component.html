@@ -1,0 +1,3 @@
+<div class="user-list-wrapper">
+  <div *ngFor="let user of userList; let even = even" class="user-line" [ngClass]="{'even-background': even}">{{user.username}}</div>
+</div>

@@ -3,41 +3,35 @@ import {Subject} from "rxjs/Subject";
 import * as shajs from 'sha.js';
 import {HttpClient} from "@angular/common/http";
 import {User} from "../classes/user";
+import {UserService} from "./user.service";
 
 @Injectable()
 export class LoginService {
 
   loggedIn: Subject<boolean> = new Subject();
-  userSubject: Subject<any> = new Subject();
   user: User;
 
-  constructor(private http: HttpClient) {
-    this.userSubject.subscribe(_user => {
+  constructor(private http: HttpClient, private userService: UserService) {
+    this.userService.userSubject.subscribe(_user => {
       this.user = _user;
     })
   }
 
-  sendCredentials(pw: string, user: User): void {
-    let encryptedPW = shajs('sha256').update({pw}).digest('hex');
+
+  sendCredentials(pw: string): void {
+    let encryptedPW = shajs('sha256').update(pw).digest('hex');
 
     let body = {
-      username: user.name,
-      password: encryptedPW,
-    };
+        username: this.user.name,
+        password: encryptedPW,
+      };
 
-    // if (this.user) {
-    //   body.username = user.name;
-    //   body.password = encryptedPW;
-    // }
-
-    // const body = {
-    //   name: this.user.subscribe(_user => _user.name),
-    //   message: this.user.subscribe(_user),
-    //   user: this.user
-    // };
-
-    console.log('body', body);
-    this.http.post('http://localhost:3000/users/login', body).subscribe();
+    // console.log('body', body);
+    this.http.post('http://localhost:3000/users/login', body).subscribe(_res => {
+      console.log('login post', _res);
+      const result = _res['status'];
+      this.loggedIn.next(result);
+    });
 
   }
 

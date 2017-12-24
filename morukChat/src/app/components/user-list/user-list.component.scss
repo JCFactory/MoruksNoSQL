@@ -1,0 +1,21 @@
+.user-list-wrapper {
+  position: absolute;
+  min-width: 200px;
+  //min-height: 200px;
+  background: white;
+  border: solid 1px;
+  left: 50px;
+  top: 50px;
+  font-weight: 600;
+  font-size: 16px;
+  padding: 10px;
+  color: black;
+
+  .user-line {
+    line-height: 30px;
+
+    &.even-background {
+      background: rgba(19, 255, 255, 0.3);
+    }
+  }
+}
