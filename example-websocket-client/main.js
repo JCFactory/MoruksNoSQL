@@ -6,7 +6,20 @@
 
  function addUsername() {
      var txt;
-     var person = prompt("Please enter your name:", "Harry Potter");
+     var person = prompt("Bitte benutzername eingeben", "Harry Potter");
+     if (person == null || person == "") {
+         txt = "User cancelled the prompt.";
+     } else {
+         txt = "Hello " + person + "! How are you today?";
+     }
+
+     return person;
+
+ }
+
+ function addChat() {
+     var txt;
+     var person = prompt("In welcher Chat?", "General");
      if (person == null || person == "") {
          txt = "User cancelled the prompt.";
      } else {
@@ -22,7 +35,7 @@
 
 var socket = io.connect('http://localhost:3000/chatmessage',{'forceNew': true});
 
-socket.emit("connect-chat", { username: addUsername()});
+socket.emit("connect-chat", { owner: addUsername(), participant: addChat()});
 
 
 
@@ -32,6 +45,11 @@ socket.on('new-message', function(data){
   console.log(data);
   render(data);
 })
+
+
+socket.on('status', function(data){
+  console.log(data);
+});
 
 function render(data){
 /*

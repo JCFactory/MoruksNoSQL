@@ -1,7 +1,6 @@
 var amqp = require('amqplib/callback_api');
 var mongodb = require('./mongodb');
 var messageUtil = require('./message');
-var myModule = require('../components/connectionHandler');
 var history = require('../components/history');
 
 const SERVERIP = "amqp://localhost";
@@ -31,9 +30,11 @@ module.exports = {
                 messageUtil.info("Sent:" + channel + " " + message + " " + user);
             });
 
+            /*
             setTimeout(function () {
                 conn.close();
             }, 500);
+            */
         });
 
         //mongodb.storeMessage(message, channel, user);
@@ -65,6 +66,53 @@ module.exports = {
             });
         });
     },
+    initGroupChat: function (owner, groupname) {
+
+        const exchangeName = groupname;
+
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
+
+                ch.assertExchange(exchangeName, 'fanout', {durable: true});
+
+                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, exchangeName, owner);
+                    messageUtil.info("Initalize Queue " + exchangeName + " for user: " + owner);
+                });
+
+
+            });
+        });
+
+    },
+    initChat: function (owner, participant) {
+
+        const exchangeName = owner + '-' + participant;
+
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
+
+                ch.assertExchange(exchangeName, 'fanout', {durable: true});
+
+                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, exchangeName, owner);
+                    messageUtil.info("Initalize Queue " + exchangeName + " for user: " + owner);
+                });
+
+                ch.assertQueue(participant, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, exchangeName, participant);
+                    messageUtil.info("Initalize Queue " + exchangeName + " for user: " + participant);
+                });
+
+            });
+        });
+
+    },
     initQueue: function (queuename, username) {
 
 
@@ -82,20 +130,37 @@ module.exports = {
             });
         });
     },
-    receiveMessage: function (channelname, username, socket) {
+    initPrivateQueue: function (owner, participant) {
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
+                const exchange = "Private";
+                const queuename = owner + "-" + participant;
+
+                ch.assertExchange(exchange, 'fanout', {durable: true});
+
+                ch.assertQueue(queuename, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, exchange, queuename);
+                    messageUtil.info("Initalize Private Queue " + queuename);
+                });
+            });
+        });
+    },
+    receiveMessage: function (channelname, owner, participant, socket) {
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
 
                 ch.assertExchange(channelname, 'fanout', {durable: true});
 
-                ch.assertQueue(username, {exclusive: false}, function (err, q) {
-                    ch.bindQueue(q.queue, channelname, username);
+                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
+                    ch.bindQueue(q.queue, channelname, owner);
 
                     ch.consume(q.queue, function (msg) {
 
 
-                        messageUtil.info(username + " received a message  '" + channelname + "': " + msg.content.toString());
+                        messageUtil.info(owner + " received a message  '" + channelname + "': " + msg.content.toString());
 
 
                         console.log(msg.content.toString());
@@ -110,7 +175,9 @@ module.exports = {
                         ch.ack(msg); // Set message as already read
 
 
-                        history.save(channelname, msgData);
+                        var collection = owner + '-' + participant;
+
+                        history.save(collection, msgData);
 
 
                         // If user closes page or chat...
