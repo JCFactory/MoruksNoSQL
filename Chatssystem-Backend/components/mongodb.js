@@ -13,11 +13,25 @@ var collections = {
 };
 
 
+
+var mongodb = function () {
+
+};
+
+mongodb.db = null;
+
+mongodb.connect = function () {
+    mongo.connect(SERVERIP, function (err, _db) {
+        mongodb.db = _db;
+    });
+};
+
+
+module.exports = mongodb;
+
+/*
 module.exports = {
 
-    /**
-     * Connect mongodb
-     */
     connect: function () {
         mongo.connect(SERVERIP, function (err, _db) {
 
@@ -39,8 +53,13 @@ module.exports = {
                     //console.log("Collection Default created!");
                 });
 
+                db.createCollection("Chats", function (err, res) {
+                   if(err) {
+                       throw err;
+                   }
+                });
 
-/*
+
                 console.log("Customize your collection!");
                 var stdin = process.openStdin();
                 stdin.addListener("data", function (d) {
@@ -55,7 +74,7 @@ module.exports = {
                 collections.General = db.collection('General');
                 collections.Default = db.collection('Default');
                 collections.ThaerTube = db.collection('ThaerTube');
- */
+
             }
 
         });
@@ -71,12 +90,8 @@ module.exports = {
             }
         });
     },
-    /**
-     * Store messages in mongodb
-     * @param message
-     * @param channel
-     * @param user
-     */
+    */
+/*
     storeMessage: function (message, channel, user) {
 
         collections[channel].insert({
@@ -100,6 +115,5 @@ module.exports = {
             }
         })
     }
-
-
 };
+ */

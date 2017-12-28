@@ -10,11 +10,12 @@ var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
+var chatComponent = require('./components/chat');
 
 // Import files for routing
 var index = require('./routes/index');
 var users = require('./routes/users');
-var channels = require('./routes/channels');
+var chats = require('./routes/chats');
 var chatmessage = require('./routes/chatmessage');
 var history = require('./routes/history');
 
@@ -68,7 +69,7 @@ app.use(function (req, res, next) {
  */
 app.use('/', index);
 app.use('/users', users);
-app.use('/channels', channels);
+app.use('/chats', chats);
 app.use('/chatmessage', chatmessage);
 app.use('/history', history);
 
@@ -103,6 +104,7 @@ mongo.connect(); // Connect with mongodb
 /*
  Websockets
  */
+/*
 var iosa = io.of('/chatmessage');
 iosa.on('connection', function (socket) {
 
@@ -124,19 +126,78 @@ iosa.on('connection', function (socket) {
     });
 
 });
+*/
+
+var privatechat = io.of('/chatmessage');
+privatechat.on('connection', function (socket) {
+
+    socket.on('connect-chat', function (data) {
+
+        var owner = data.owner;
+        var participant = data.participant;
+        //var exchange = null;
+
+        if(participant == "Default" || participant == "General") {
+            var exchange = participant;
+
+
+            socket.emit('status', "erfolgreich");
+
+            socket.on('new-message', function (data) {
+                console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
+                util.sendMessageToChannel(exchange, data.message, owner);
+            });
+
+            util.receiveMessage(exchange, owner, participant, socket);
+
+        } else {
+            chatComponent.getExchangeName(owner, participant, function (datax) {
+                if(datax !== null) {
+                    console.log(datax);
+                    var exchange = datax;
+
+                    socket.emit('status', "erfolgreich");
+
+                    socket.on('new-message', function (data) {
+                        console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
+                        util.sendMessageToChannel(exchange, data.message, owner);
+                    });
+
+                    util.receiveMessage(exchange, owner, participant, socket);
+
+                } else {
+                    console.log("No Exchange found. Closing Socket");
+                    //socket.close();
+                }
+
+            });
+
+        }
+
+
+
+    });
+
+});
 
 
 // Init Queue
 
 const GENERAL = "General";
 const DEFAULT = "Default";
-var userList = ["inan", "steffen", "jacky"];
+var userList = ["inanbayram", "steffen", "jacky"];
 
 
-userList.forEach(function (username) {
-    util.initQueue(GENERAL, username);
-});
 
-userList.forEach(function (username) {
-    util.initQueue(DEFAULT, username);
-});
+
+setTimeout(function () {
+    userList.forEach(function (username) {
+        chatComponent.createGroupChat(username, GENERAL);
+        //util.initQueue(GENERAL, username);
+    });
+
+    userList.forEach(function (username) {
+        chatComponent.createGroupChat(username, DEFAULT);
+        //util.initQueue(DEFAULT, username);
+    });
+}, 1000);

@@ -25,7 +25,7 @@ router.get('/', function (req, res, next) {
 });
 
 
-router.post('/new', function (req, res, next) {
+router.post('/', function (req, res, next) {
 
     var firstname = req.body.firstname;
     var lastname = req.body.lastname;

@@ -11,11 +11,14 @@ router.get('/', function(req, res, next) {
 
 
 
-router.get('/:channelname', function (req, res, next) {
+router.get('/:owner/:channelname', function (req, res, next) {
 
     var channelname = req.params.channelname;
+    var owner = req.params.owner;
 
-    history.get(channelname, function (data) {
+    var collection = owner + '-' + channelname;
+
+    history.get(collection, function (data) {
        res.json(data);
     });
 });
