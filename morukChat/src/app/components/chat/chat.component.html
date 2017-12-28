@@ -88,11 +88,11 @@
   <div class="content">
     <div class="contact-profile">
       <img src="../../assets/user/erdogan.jpg" alt=""/>
-      <p>Recep</p>
+      <p>{{currentChannelName}}</p>
     </div>
     <div class="messages" #messageContainer>
       <ul>
-        <li *ngFor="let entry of history" class="replies">
+        <li *ngFor="let entry of chatHistory" class="replies">
           <img src="../../assets/user/thaer.jpg" alt=""/>
           <!--<p><b>{{message.user.name}}:</b> {{message}}</p>-->
           <p><b>{{entry.data.sender}}</b>: {{entry.data.message}}</p>

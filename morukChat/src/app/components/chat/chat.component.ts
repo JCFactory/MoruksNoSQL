@@ -25,32 +25,34 @@ export class ChatComponent implements OnInit {
   @Input() user: User;
   @Output() openUserList = new EventEmitter();
 
-  history: any;
-  currentChannel = INITIAL_CHANNEL;
+  chatHistory: any;
+  currentChannelName = INITIAL_CHANNEL;
   messageInput = '';
   channels = [
     {
       name: INITIAL_CHANNEL,
-      selected: true
+      selected: true,
+      history: []
     },
     {
       name: 'General',
-      selected: false
+      selected: false,
+      history: []
     },
     {
       name: 'Default',
-      selected: false
+      selected: false,
+      history: []
     }
   ];
 
   constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
     // this.allUsers = this.http.get('http://localhost:3000/users');
-    this.history = [];
+    this.chatHistory = [];
   }
 
   ngOnInit(): void {
-    // this.updateChat(INITIAL_CHANNEL);
 
     // Websocket mit username und channel registrieren...
     socket.emit("connect-chat", { username: this.user.name});
@@ -71,8 +73,8 @@ export class ChatComponent implements OnInit {
 
   addToHistory(data): Observable<any> {
     return Observable.create(obs => {
-      this.history.push(data);
-      obs.next(this.history);
+      this.chatHistory.push(data);
+      obs.next(this.chatHistory);
     });
   }
 
@@ -94,5 +96,20 @@ export class ChatComponent implements OnInit {
 
     socket.emit('new-message', data);
   }
+
+  updateChat(name) {
+    const tempChannel = this.channels.find(channel => channel.selected === true);
+    tempChannel.history = this.chatHistory;
+    for (const channel of this.channels) {
+      if (channel.name === name) {
+        channel.selected = true;
+        this.chatHistory = channel.history;
+        this.currentChannelName = channel.name;
+      } else {
+        channel.selected = false;
+      }
+    }
+  }
+
 }
 
