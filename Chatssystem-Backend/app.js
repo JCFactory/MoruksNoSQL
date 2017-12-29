@@ -137,6 +137,7 @@ privatechat.on('connection', function (socket) {
         var participant = data.participant;
         //var exchange = null;
 
+        console.log(data);
         if(participant == "Default" || participant == "General") {
             var exchange = participant;
 
