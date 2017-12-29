@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 var SHA256 = require("crypto-js/sha256");
 
-
 var mysql = require('mysql');
 var connection = mysql.createConnection({
     host: 'localhost',
@@ -11,6 +10,20 @@ var connection = mysql.createConnection({
     database: 'nosql'
 });
 connection.connect();
+
+/* initializes a list with all users */
+// function initUserList(callback) {
+//     console.log('is here');
+//     connection.query('SELECT username FROM user', function (error, results, fields) {
+//
+//         if (err) {
+//             return (err);
+//         } else {
+//             console.log('userlist', results);
+//             return(results);
+//         }
+//     });
+// }
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {

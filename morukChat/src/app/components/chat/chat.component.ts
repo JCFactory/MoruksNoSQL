@@ -10,9 +10,6 @@ import {UserService} from "../../services/user.service";
 import {templateVisitAll} from "@angular/compiler";
 import {Observable} from "rxjs/Observable";
 
-
-const INITIAL_CHANNEL = 'ThaerTube';
-
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -26,17 +23,12 @@ export class ChatComponent implements OnInit {
   @Output() openUserList = new EventEmitter();
 
   chatHistory: any;
-  currentChannelName = INITIAL_CHANNEL;
   messageInput = '';
+  userList: any;
   channels = [
     {
-      name: INITIAL_CHANNEL,
-      selected: true,
-      history: []
-    },
-    {
       name: 'General',
-      selected: false,
+      selected: true,
       history: []
     },
     {
@@ -45,31 +37,49 @@ export class ChatComponent implements OnInit {
       history: []
     }
   ];
+  currentChannelName = this.channels[0].name;
 
   constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
-    // this.allUsers = this.http.get('http://localhost:3000/users');
+    this.http.get('http://localhost:3000/users').subscribe(_list => {
+      this.userList = _list;
+      this.allUsersAsChannel(_list);
+    });
     this.chatHistory = [];
   }
 
   ngOnInit(): void {
 
-    // Websocket mit username und channel registrieren...
-    socket.emit("connect-chat", { username: this.user.name});
+    // // Websocket mit username und channel registrieren...
+    let data = {
+      owner: this.user.name,
+      participant: this.currentChannelName,
+    };
 
+    socket.emit('connect-chat', data);
     // Hier wird die Nachricht ankommen...
     socket.on('new-message', (data) => {
       // Das hier dann irgendwie in die liste/fenster pushen...
-      console.log(data);
+      console.log('onInit', data);
+
       this.addToHistory(data).subscribe(_hist => {
         // console.log(_hist);
         this.messageInput = '';
         this.changeDetector.detectChanges();
-
       });
     })
   }
 
+  allUsersAsChannel(list) {
+    for (const user of list) {
+      var tempChannel = {
+          name: user.username,
+          selected: false,
+          history: []
+        };
+      this.channels.push(tempChannel);
+    }
+  }
 
   addToHistory(data): Observable<any> {
     return Observable.create(obs => {
@@ -86,15 +96,17 @@ export class ChatComponent implements OnInit {
 
   sendMessage(message): void {
 
-    var data = {
-      username: this.user.name,
-      channelname: 'channelname',
+// debugger;
+
+    let data = {
+      owner: this.user.name,
+      participant: this.currentChannelName,
       message: message
     };
 
-    // console.log('socket:', socket);
-
+    // socket.emit('connect-chat', data);
     socket.emit('new-message', data);
+
   }
 
   updateChat(name) {
@@ -110,6 +122,16 @@ export class ChatComponent implements OnInit {
       }
     }
   }
+
+  showAllUsers() {
+    // this.http.get('http://localhost:3000/users').subscribe(_users => {
+    //   this.userList = _users;
+    //   console.log(_users)
+    // });
+
+    console.log(this.userList);
+  }
+
 
 }
 
