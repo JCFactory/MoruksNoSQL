@@ -28,7 +28,7 @@ export class ChatComponent implements OnInit {
   channels = [
     {
       name: 'General',
-      selected: false,
+      selected: true,
       history: []
     },
     {
@@ -43,7 +43,6 @@ export class ChatComponent implements OnInit {
 
     this.http.get('http://localhost:3000/users').subscribe(_list => {
       this.userList = _list;
-      console.log(_list);
       this.allUsersAsChannel(_list);
     });
     this.chatHistory = [];
@@ -51,18 +50,22 @@ export class ChatComponent implements OnInit {
 
   ngOnInit(): void {
 
-    // Websocket mit username und channel registrieren...
-    socket.emit("connect-chat", { username: this.user.name});
+    // // Websocket mit username und channel registrieren...
+    let data = {
+      owner: this.user.name,
+      participant: this.currentChannelName,
+    };
 
+    socket.emit('connect-chat', data);
     // Hier wird die Nachricht ankommen...
     socket.on('new-message', (data) => {
       // Das hier dann irgendwie in die liste/fenster pushen...
-      console.log(data);
+      console.log('onInit', data);
+
       this.addToHistory(data).subscribe(_hist => {
         // console.log(_hist);
         this.messageInput = '';
         this.changeDetector.detectChanges();
-
       });
     })
   }
@@ -93,15 +96,17 @@ export class ChatComponent implements OnInit {
 
   sendMessage(message): void {
 
-    var data = {
-      username: this.user.name,
+// debugger;
+
+    let data = {
+      owner: this.user.name,
       participant: this.currentChannelName,
       message: message
     };
 
-    // console.log('socket:', socket);
-
+    // socket.emit('connect-chat', data);
     socket.emit('new-message', data);
+
   }
 
   updateChat(name) {

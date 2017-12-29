@@ -187,7 +187,23 @@ const GENERAL = "General";
 const DEFAULT = "Default";
 var userList = ["inanbayram", "steffen", "jacky"];
 
+// function createGroupChats(userList) {
+//
+//     console.log(userList);
+//
+//     userList.forEach(function (username) {
+//         chatComponent.createGroupChat(username, GENERAL);
+//         //util.initQueue(GENERAL, username);
+//     });
+//
+//     userList.forEach(function (username) {
+//         chatComponent.createGroupChat(username, DEFAULT);
+//         //util.initQueue(DEFAULT, username);
+//     });
+// }
 
+
+// initUserList(createGroupChats);
 
 
 setTimeout(function () {
