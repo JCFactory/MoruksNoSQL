@@ -10,9 +10,6 @@ import {UserService} from "../../services/user.service";
 import {templateVisitAll} from "@angular/compiler";
 import {Observable} from "rxjs/Observable";
 
-
-const INITIAL_CHANNEL = 'ThaerTube';
-
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
@@ -26,14 +23,9 @@ export class ChatComponent implements OnInit {
   @Output() openUserList = new EventEmitter();
 
   chatHistory: any;
-  currentChannelName = INITIAL_CHANNEL;
   messageInput = '';
+  userList: any;
   channels = [
-    {
-      name: INITIAL_CHANNEL,
-      selected: true,
-      history: []
-    },
     {
       name: 'General',
       selected: false,
@@ -45,10 +37,15 @@ export class ChatComponent implements OnInit {
       history: []
     }
   ];
+  currentChannelName = this.channels[0].name;
 
   constructor(private http: HttpClient, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
-    // this.allUsers = this.http.get('http://localhost:3000/users');
+    this.http.get('http://localhost:3000/users').subscribe(_list => {
+      this.userList = _list;
+      console.log(_list);
+      this.allUsersAsChannel(_list);
+    });
     this.chatHistory = [];
   }
 
@@ -70,6 +67,16 @@ export class ChatComponent implements OnInit {
     })
   }
 
+  allUsersAsChannel(list) {
+    for (const user of list) {
+      var tempChannel = {
+          name: user.username,
+          selected: false,
+          history: []
+        };
+      this.channels.push(tempChannel);
+    }
+  }
 
   addToHistory(data): Observable<any> {
     return Observable.create(obs => {
@@ -88,7 +95,7 @@ export class ChatComponent implements OnInit {
 
     var data = {
       username: this.user.name,
-      channelname: 'channelname',
+      participant: this.currentChannelName,
       message: message
     };
 
@@ -110,6 +117,16 @@ export class ChatComponent implements OnInit {
       }
     }
   }
+
+  showAllUsers() {
+    // this.http.get('http://localhost:3000/users').subscribe(_users => {
+    //   this.userList = _users;
+    //   console.log(_users)
+    // });
+
+    console.log(this.userList);
+  }
+
 
 }
 
