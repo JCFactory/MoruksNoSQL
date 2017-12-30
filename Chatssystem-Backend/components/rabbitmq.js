@@ -157,33 +157,44 @@ module.exports = {
                 ch.assertQueue(owner, {exclusive: false}, function (err, q) {
                     ch.bindQueue(q.queue, channelname, owner);
 
+                    /*
+                    setInterval(function(){
+                        console.log("send");
+                        socket.emit('new-message', "def");
+                    }, 5000);
+                    */
+
                     ch.consume(q.queue, function (msg) {
 
 
                         messageUtil.info(owner + " received a message  '" + channelname + "': " + msg.content.toString());
 
 
-                        console.log(msg.content.toString());
+//                        console.log(msg.content.toString());
 
                         var msgData = JSON.parse(msg.content.toString());
                         // If a new message is available, send it to the user/client
+
+
+                        console.log("Emit message");
                         socket.emit("new-message", {
                             data: msgData
                         });
 
 
-                        ch.ack(msg); // Set message as already read
 
 
                         var collection = owner + '-' + participant;
 
                         history.save(collection, msgData);
+                        ch.ack(msg); // Set message as already read
 
 
                         // If user closes page or chat...
                         socket.on('disconnect', function () {
                             console.log("Websocket wurde beendet");
-                            ch.close();
+                            socket.disconnect();
+                            //ch.close();
                         });
 
                     }, {noAck: false});

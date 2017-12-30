@@ -2,13 +2,14 @@ import {Component, OnInit} from '@angular/core';
 import {LoginService} from "./services/login.service";
 import {User} from "./classes/user";
 import {UserService} from "./services/user.service";
+import {WebsocketService} from "./services/websocket.service";
 
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  providers: [LoginService,UserService]
+  providers: [LoginService,UserService, WebsocketService]
 })
 export class AppComponent implements OnInit {
 

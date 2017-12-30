@@ -20,7 +20,6 @@ var chatmessage = require('./routes/chatmessage');
 var history = require('./routes/history');
 
 
-
 var util = require('./components/rabbitmq');
 var mongo = require('./components/mongodb');
 
@@ -101,46 +100,22 @@ module.exports = {app: app, server: server, io: io};
 mongo.connect(); // Connect with mongodb
 
 
-/*
- Websockets
- */
-/*
-var iosa = io.of('/chatmessage');
-iosa.on('connection', function (socket) {
-
-    var username = "unknown";
-    var channelname = "General";
-
-    socket.on('connect-chat', function (data) {
-
-        username = data.username;
-        console.log(data.username + " logged in");
-
-        // User sends a new message
-        socket.on('new-message', function (data) {
-            console.log("Neue Nachricht: " + channelname + " " + data.message + " " + username);
-            util.sendMessageToChannel(channelname, data.message, username);
-        });
-
-        util.receiveMessage(channelname, username, socket);
-    });
-
-});
-*/
-
 var privatechat = io.of('/chatmessage');
 privatechat.on('connection', function (socket) {
 
+
+    console.log(socket);
     socket.on('connect-chat', function (data) {
 
         var owner = data.owner;
         var participant = data.participant;
         //var exchange = null;
 
-        console.log(data);
-        if(participant == "Default" || participant == "General") {
+        console.log("Login: " + data.owner + " in: " + data.owner + '-' + data.participant);
+        if (participant == "Default" || participant == "General") {
             var exchange = participant;
 
+            console.log("Gruppen Chat");
 
             socket.emit('status', "erfolgreich");
 
@@ -149,13 +124,18 @@ privatechat.on('connection', function (socket) {
                 util.sendMessageToChannel(exchange, data.message, owner);
             });
 
+
+
+
+
             util.receiveMessage(exchange, owner, participant, socket);
 
         } else {
             chatComponent.getExchangeName(owner, participant, function (datax) {
-                if(datax !== null) {
+                if (datax !== null) {
                     console.log(datax);
                     var exchange = datax;
+                    console.log("Privat Chat");
 
                     socket.emit('status', "erfolgreich");
 
@@ -174,7 +154,6 @@ privatechat.on('connection', function (socket) {
             });
 
         }
-
 
 
     });
