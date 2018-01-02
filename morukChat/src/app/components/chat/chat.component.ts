@@ -26,6 +26,7 @@ export class ChatComponent implements OnInit {
 
   socket;
 
+  chatList: any;
   chatHistory: any;
   messageInput = '';
   userList: any;
@@ -45,49 +46,25 @@ export class ChatComponent implements OnInit {
 
   constructor(private http: HttpClient, private _websocketService: WebsocketService, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
+
     this.http.get('http://localhost:3000/users').subscribe(_list => {
       this.userList = _list;
       this.allUsersAsChannel(_list);
     });
     this.chatHistory = [];
 
-
   }
+
 
   ngOnInit(): void {
 
-    //this.socket = io('http://localhost:3000/chatmessage');
+    // Get chatlist of user
+    this.http.get('http://localhost:3000/chats/' + this.user.name).subscribe(_list => {
+      this.chatList = _list;
+    });
 
-
-/*
-    console.log(this.socket.on('new-message', (data) => {
-      // Das hier dann irgendwie in die liste/fenster pushen...
-      console.log("New Message received for " + this.currentChannelName, data);
-
-    }));
-    */
-
-      this.initSocket();
-    /*
-    // // Websocket mit username und channel registrieren...
-    let data = {
-      owner: this.user.name,
-      participant: this.currentChannelName,
-    };
-
-    this.socket.emit('connect-chat', data);
-    // Hier wird die Nachricht ankommen...
-    this.socket.on('new-message', (data) => {
-      // Das hier dann irgendwie in die liste/fenster pushen...
-      console.log('onInit', data);
-
-      this.addToHistory(data).subscribe(_hist => {
-        // console.log(_hist);
-        this.messageInput = '';
-        this.changeDetector.detectChanges();
-      });
-    })
-    */
+    // Initialize the websocket
+    this.initSocket();
   }
 
   allUsersAsChannel(list) {
@@ -122,9 +99,6 @@ export class ChatComponent implements OnInit {
    */
   initSocket() {
 
-    //console.log(this.socket);
-    //this.socket = io('http://localhost:3000/chatmessage');
-
     let data = {
       owner: this.user.name,
       participant: this.currentChannelName,
@@ -133,28 +107,25 @@ export class ChatComponent implements OnInit {
     this._websocketService.emit('connect-chat', data);
 
 
+    // Listener for new messages...
     this._websocketService.on('new-message', (data) => {
-      // Das hier dann irgendwie in die liste/fenster pushen...
       console.log("New Message received for " + this.currentChannelName, data);
 
 
-
       this.addToHistory(data).subscribe(_hist => {
-        // console.log(_hist);
         this.messageInput = '';
         this.changeDetector.detectChanges();
-
-        this._websocketService.emit('msg-read', data);
       });
-
     });
-
 
   }
 
-  sendMessage(message): void {
 
-// debugger;
+  /**
+   * Send message
+   * @param message
+   */
+  sendMessage(message): void {
 
     let data = {
       owner: this.user.name,
@@ -162,17 +133,13 @@ export class ChatComponent implements OnInit {
       message: message
     };
 
-    // socket.emit('connect-chat', data);
     this._websocketService.emit('new-message', data);
-
   }
+
 
   updateChat(name) {
 
-    //this.socket.disconnect();
-    //this.socket = null;
-
-    //var socket = io('http://localhost:3000/chatmessage');
+    let self = this;
 
     const tempChannel = this.channels.find(channel => channel.selected === true);
     tempChannel.history = this.chatHistory;
@@ -182,7 +149,12 @@ export class ChatComponent implements OnInit {
         this.chatHistory = channel.history;
         this.currentChannelName = channel.name;
 
-        this.initSocket();
+
+        this._websocketService.clean(function () {
+          self._websocketService.init(function () {
+            self.initSocket();
+          });
+        });
 
       } else {
         channel.selected = false;
@@ -197,8 +169,22 @@ export class ChatComponent implements OnInit {
     //   console.log(_users)
     // });
 
-    console.log(this.socket);
+
     console.log(this.userList);
+  }
+
+
+  /**
+   * Small function to decide the style for the message
+   * @param sender
+   * @returns {string}
+   */
+  getStyle(sender: any) {
+    if (sender == this.user.name) {
+      return 'replies';
+    } else {
+      return 'sent';
+    }
   }
 
 

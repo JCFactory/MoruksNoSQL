@@ -104,7 +104,50 @@ var privatechat = io.of('/chatmessage');
 privatechat.on('connection', function (socket) {
 
 
+    socket.on('disconnect', function (data) {
+        console.log('Disconnect...');
+        socket.removeAllListeners('new-message');
+    });
+
+
+    // Connect user...
+    socket.on('connect-chat', function (data) {
+
+        var owner = data.owner;
+        var participant = data.participant;
+        var exchange = participant;
+        console.log("Login: " + owner + " in: " + owner + '-' + participant);
+
+
+        socket.on('new-message', function (datax) {
+            console.log(data);
+            console.log("Neue Nachricht: " + data.participant + " " + datax.message + " " + data.owner);
+
+            util.sendMessageToChannel(data.participant, datax.message, data.owner, function () {
+                console.log("Message sent");
+            });
+
+
+        });
+
+
+        util.receiveMessage(exchange, owner, participant, socket, function () {
+            console.log("Stopped");
+        });
+
+    });
+
+});
+
+
+/*
+var privatechat = io.of('/chatmessage');
+privatechat.on('connection', function (socket) {
+
+
     console.log(socket);
+
+    // Connect user...
     socket.on('connect-chat', function (data) {
 
         var owner = data.owner;
@@ -159,7 +202,7 @@ privatechat.on('connection', function (socket) {
     });
 
 });
-
+*/
 
 // Init Queue
 

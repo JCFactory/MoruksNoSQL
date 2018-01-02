@@ -13,7 +13,9 @@ module.exports = {
      * @param channel
      * @param message
      */
-    sendMessageToChannel: function (channel, message, user) {
+    sendMessageToChannel: function (channel, message, user, callback) {
+
+        console.log(channel + ' ' + message + ' ' + user);
 
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
@@ -28,13 +30,10 @@ module.exports = {
 
                 ch.publish(channel, '', new Buffer(JSON.stringify(data)));
                 messageUtil.info("Sent:" + channel + " " + message + " " + user);
+                callback()
             });
 
-            /*
-            setTimeout(function () {
-                conn.close();
-            }, 500);
-            */
+
         });
 
         //mongodb.storeMessage(message, channel, user);
@@ -68,7 +67,7 @@ module.exports = {
     },
     initGroupChat: function (owner, groupname) {
 
-        const exchangeName = groupname;
+        const exchangeName = groupname; // Channelname
 
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
@@ -76,9 +75,10 @@ module.exports = {
 
                 ch.assertExchange(exchangeName, 'fanout', {durable: true});
 
-                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
 
-                    ch.bindQueue(q.queue, exchangeName, owner);
+                ch.assertQueue(owner + '-' + groupname, {exclusive: false}, function (err, q) {
+
+                    ch.bindQueue(q.queue, exchangeName, '');
                     messageUtil.info("Initalize Queue " + exchangeName + " for user: " + owner);
                 });
 
@@ -87,6 +87,11 @@ module.exports = {
         });
 
     },
+    /**
+     * Wird beim starten/initalisieren der Chats genutzt...
+     * @param owner
+     * @param participant
+     */
     initChat: function (owner, participant) {
 
         const exchangeName = owner + '-' + participant;
@@ -147,25 +152,39 @@ module.exports = {
             });
         });
     },
-    receiveMessage: function (channelname, owner, participant, socket) {
+    receiveMessage: function (channelname, owner, participant, socket, callbackFunc) {
+
+
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
-
+                // If user closes page or chat...
+                /*
+                 socket.on('disconnect', function () {
+                     console.log("Anhalten...");
+                     ch.close();
+                 });
+ */
                 ch.assertExchange(channelname, 'fanout', {durable: true});
 
-                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
-                    ch.bindQueue(q.queue, channelname, owner);
+                ch.assertQueue(owner + '-' + participant, {exclusive: false}, function (err, q) {
+                    ch.bindQueue(q.queue, channelname, '');
 
-                    /*
-                    setInterval(function(){
-                        console.log("send");
-                        socket.emit('new-message', "def");
-                    }, 5000);
-                    */
+
+                    socket.on('disconnect', function () {
+                        console.log("Anhalten...");
+                        try {
+                            conn.close();
+                            callbackFunc();
+                        } catch (ex) {
+                            console.log(ex);
+                        }
+
+                    });
 
                     ch.consume(q.queue, function (msg) {
 
+                        console.log("SocketID: ", socket.id);
 
                         messageUtil.info(owner + " received a message  '" + channelname + "': " + msg.content.toString());
 
@@ -181,21 +200,11 @@ module.exports = {
                             data: msgData
                         });
 
-
-
-
                         var collection = owner + '-' + participant;
 
                         history.save(collection, msgData);
                         ch.ack(msg); // Set message as already read
 
-
-                        // If user closes page or chat...
-                        socket.on('disconnect', function () {
-                            console.log("Websocket wurde beendet");
-                            socket.disconnect();
-                            //ch.close();
-                        });
 
                     }, {noAck: false});
 

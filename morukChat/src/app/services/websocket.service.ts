@@ -11,6 +11,16 @@ export class WebsocketService {
 
   }
 
+  clean(callback: any) {
+    this.socket.close();
+    callback();
+  }
+
+  init(callback: any) {
+
+    this.socket = io('http://localhost:3000/chatmessage');
+    callback();
+  }
 
   on(eventName: any, callback: any) {
     if (this.socket) {
@@ -23,6 +33,7 @@ export class WebsocketService {
 
 
   emit(eventName: any, data: any) {
+    console.log(this.socket);
     if (this.socket) {
       this.socket.emit(eventName, data);
     }
@@ -32,6 +43,14 @@ export class WebsocketService {
   removeListener(eventname: any) {
     if (this.socket) {
       this.socket.removeListener(eventname);
+    }
+  }
+
+
+  disconnect() {
+    if (this.socket) {
+      console.log('Disconnect');
+      this.socket.disconnect();
     }
   }
 

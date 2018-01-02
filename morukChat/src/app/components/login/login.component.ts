@@ -10,8 +10,8 @@ import {UserService} from "../../services/user.service";
 })
 export class LoginComponent implements OnInit {
 
-  userNameInput: string;
-  passwordInput: string;
+  userNameInput: string = 'inanbayram';
+  passwordInput: string = '1234';
   isLoggedIn: boolean;
   logInTries = 0;
   showWarning: boolean;
