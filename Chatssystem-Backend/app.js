@@ -116,24 +116,50 @@ privatechat.on('connection', function (socket) {
         var owner = data.owner;
         var participant = data.participant;
         var exchange = participant;
+
         console.log("Login: " + owner + " in: " + owner + '-' + participant);
 
+        if (participant === "Default" || participant === "General") {
+            console.log("Group Chat");
+            socket.on('new-message', function (datax) {
+                console.log(data);
 
-        socket.on('new-message', function (datax) {
-            console.log(data);
-            console.log("Neue Nachricht: " + data.participant + " " + datax.message + " " + data.owner);
+                util.sendMessageToChannel(data.participant, datax.message, data.owner, function () {
+                    console.log("Message sent");
+                });
+            });
 
-            util.sendMessageToChannel(data.participant, datax.message, data.owner, function () {
-                console.log("Message sent");
+            util.receiveMessage(exchange, owner, participant, socket, function () {
+                console.log("Stopped");
             });
 
 
-        });
+        } else {
+            chatComponent.getExchangeName(owner, participant, function (datax) {
+                if (datax !== null) {
+                    console.log(datax);
+                    var exchange = datax;
+                    console.log("Privat Chat");
 
+                    socket.on('new-message', function (data) {
+                        console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
+                        util.sendMessageToChannel(exchange, data.message, owner,function () {
+                            console.log("Message sent");
+                        });
+                    });
 
-        util.receiveMessage(exchange, owner, participant, socket, function () {
-            console.log("Stopped");
-        });
+                    util.receiveMessage(exchange, owner, participant, socket, function () {
+                        console.log("Stopped Privat Chat");
+                    });
+
+                } else {
+                    console.log("No Exchange found. Closing Socket");
+                    //socket.close();
+                }
+
+            });
+
+        }
 
     });
 
@@ -143,9 +169,6 @@ privatechat.on('connection', function (socket) {
 /*
 var privatechat = io.of('/chatmessage');
 privatechat.on('connection', function (socket) {
-
-
-    console.log(socket);
 
     // Connect user...
     socket.on('connect-chat', function (data) {

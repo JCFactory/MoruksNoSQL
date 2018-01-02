@@ -10,7 +10,6 @@ import {UserService} from "../../services/user.service";
 import {WebsocketService} from "../../services/websocket.service";
 import {templateVisitAll} from "@angular/compiler";
 import {Observable} from "rxjs/Observable";
-import * as io from "socket.io-client";
 
 @Component({
   selector: 'app-chat',

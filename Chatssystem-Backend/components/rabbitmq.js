@@ -39,7 +39,7 @@ module.exports = {
         //mongodb.storeMessage(message, channel, user);
     },
     /**
-     * Receive a message and store this in mongodb
+     * Receive a message and store this in mongodb (Group Chat) Default and General...
      */
     receiveMessagesFromChannel: function (channelName, username) {
 
@@ -88,7 +88,7 @@ module.exports = {
 
     },
     /**
-     * Wird beim starten/initalisieren der Chats genutzt...
+     * Wird beim starten/initalisieren der Chats genutzt... (Privat Chat)
      * @param owner
      * @param participant
      */
@@ -102,15 +102,15 @@ module.exports = {
 
                 ch.assertExchange(exchangeName, 'fanout', {durable: true});
 
-                ch.assertQueue(owner, {exclusive: false}, function (err, q) {
+                ch.assertQueue(owner + '-' + participant, {exclusive: false}, function (err, q) {
 
-                    ch.bindQueue(q.queue, exchangeName, owner);
+                    ch.bindQueue(q.queue, exchangeName, '');
                     messageUtil.info("Initalize Queue " + exchangeName + " for user: " + owner);
                 });
 
-                ch.assertQueue(participant, {exclusive: false}, function (err, q) {
+                ch.assertQueue(participant + '-' + owner, {exclusive: false}, function (err, q) {
 
-                    ch.bindQueue(q.queue, exchangeName, participant);
+                    ch.bindQueue(q.queue, exchangeName, '');
                     messageUtil.info("Initalize Queue " + exchangeName + " for user: " + participant);
                 });
 
