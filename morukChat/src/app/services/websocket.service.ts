@@ -25,7 +25,6 @@ export class WebsocketService {
   on(eventName: any, callback: any) {
     if (this.socket) {
       this.socket.on(eventName, function (data: any) {
-        console.log(data);
         callback(data);
       });
     }
@@ -33,7 +32,6 @@ export class WebsocketService {
 
 
   emit(eventName: any, data: any) {
-    console.log(this.socket);
     if (this.socket) {
       this.socket.emit(eventName, data);
     }

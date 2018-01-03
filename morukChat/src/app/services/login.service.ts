@@ -28,7 +28,7 @@ export class LoginService {
 
     // console.log('body', body);
     this.http.post('http://localhost:3000/users/login', body).subscribe(_res => {
-      console.log('login post', _res);
+
       const result = _res['status'];
       this.loggedIn.next(result);
     });

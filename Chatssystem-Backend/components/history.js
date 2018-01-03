@@ -12,8 +12,6 @@ var history = function () {
  */
 history.get = function (channelname, callback) {
 
-
-
     mongodb.db.collection(channelname).find({}).toArray(function (err, result) {
         if (err) {
             callback(err);
@@ -22,11 +20,6 @@ history.get = function (channelname, callback) {
         }
     });
 
-    /*
-    mongodb.getData(channelname, function (data) {
-        callback(data);
-    });
-*/
 };
 
 /**
@@ -36,7 +29,6 @@ history.get = function (channelname, callback) {
  */
 history.save = function (channelname, data) {
 
-
     mongodb.db.collection(channelname).insertOne(data, function (err, res) {
         if (err) {
             throw err;
@@ -45,9 +37,6 @@ history.save = function (channelname, data) {
         }
     });
 
-    /*
-    mongodb.save(channelname, data);
-    */
 };
 
 module.exports = history;

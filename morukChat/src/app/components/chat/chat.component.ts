@@ -1,15 +1,15 @@
 import {
-  ChangeDetectorRef,
-  Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges,
-  ViewChild
+  ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild
 } from '@angular/core';
+
 import {HttpClient} from '@angular/common/http';
 import {User} from "../../classes/user";
 import {LoginService} from "../../services/login.service";
 import {UserService} from "../../services/user.service";
 import {WebsocketService} from "../../services/websocket.service";
-import {templateVisitAll} from "@angular/compiler";
 import {Observable} from "rxjs/Observable";
+
+const SERVERURL = "http://localhost:3000";
 
 @Component({
   selector: 'app-chat',
@@ -23,73 +23,108 @@ export class ChatComponent implements OnInit {
   @Input() user: User;
   @Output() openUserList = new EventEmitter();
 
-  socket;
 
-  chatList: any;
-  chatHistory: any;
+  channels = []; // Chatlist with History
+  chatList: any; // Chatlist from API
+  chatHistory: any; // Temporary Chat History
+  currentChannelName: string;
+
   messageInput = '';
-  userList: any;
-  channels = [
-    {
-      name: 'General',
-      selected: true,
-      history: []
-    },
-    {
-      name: 'Default',
-      selected: false,
-      history: []
-    }
-  ];
-  currentChannelName = this.channels[0].name;
 
   constructor(private http: HttpClient, private _websocketService: WebsocketService, private loginService: LoginService, private userService: UserService, private changeDetector: ChangeDetectorRef) {
 
-
-    this.http.get('http://localhost:3000/users').subscribe(_list => {
-      this.userList = _list;
-      this.allUsersAsChannel(_list);
-    });
     this.chatHistory = [];
-
   }
 
 
   ngOnInit(): void {
 
-    // Get chatlist of user
-    this.http.get('http://localhost:3000/chats/' + this.user.name).subscribe(_list => {
+    // Get Chatlist of user...
+    this.http.get(SERVERURL + '/chats/' + this.user.name).subscribe(_list => {
       this.chatList = _list;
+      this.currentChannelName = this.chatList[0].participant;
+
+      this.createChannelArr(() => {
+
+        // Initialize the websocket
+        this.initSocket();
+
+        // Load history for each channel
+        this.chatList.forEach(element => {
+
+          this.http.get<any>(SERVERURL + '/history/' + this.user.name + '/' + element.participant).subscribe(channelHistory => {
+
+            this.getIndexByName(element.participant, index => {
+              this.channels[index].history = channelHistory;
+
+              if (element.participant === this.currentChannelName) {
+                this.chatHistory = channelHistory
+              }
+            });
+          });
+        });
+      });
+    });
+  }
+
+
+  /**
+   * Get index of a object from this.channels
+   * @param {string} name
+   * @param callback
+   */
+  getIndexByName(name: string, callback: any) {
+
+    let index = null;
+
+    for (let i = 0; i < this.channels.length; i++) {
+      if (this.channels[i].name == name) {
+        index = i;
+        callback(index);
+        break;
+      }
+    }
+
+  }
+
+
+  /**
+   * Create channel array
+   * @param callback
+   */
+  createChannelArr(callback: any) {
+
+    let first = true;
+    this.chatList.forEach(element => {
+
+      let chatName = element.participant;
+
+      this.channels.push({
+        name: chatName,
+        selected: first,
+        history: []
+      });
+
+      if (first) {
+        first = false;
+      }
+
     });
 
-    // Initialize the websocket
-    this.initSocket();
+    callback();
   }
 
-  allUsersAsChannel(list) {
-    for (const user of list) {
-      var tempChannel = {
-        name: user.username,
-        selected: false,
-        history: []
-      };
-      this.channels.push(tempChannel);
-    }
-  }
 
+  /**
+   * Add message to temporary chat history
+   * @param data
+   * @returns {Observable<any>}
+   */
   addToHistory(data): Observable<any> {
     return Observable.create(obs => {
-
-
-      this.chatHistory.push(data);
+      this.chatHistory.push(data.data);
       obs.next(this.chatHistory);
     });
-  }
-
-  setChannelSelected(event: string): void {
-    for (let channel of this.channels) {
-      channel.selected = channel.name === event;
-    }
   }
 
 
@@ -104,19 +139,27 @@ export class ChatComponent implements OnInit {
     };
 
     this._websocketService.emit('connect-chat', data);
+    this.scrollToLastMessage();
 
-
-    // Listener for new messages...
     this._websocketService.on('new-message', (data) => {
-      console.log("New Message received for " + this.currentChannelName, data);
-
 
       this.addToHistory(data).subscribe(_hist => {
         this.messageInput = '';
         this.changeDetector.detectChanges();
+        this.scrollToLastMessage();
       });
     });
 
+  }
+
+
+  /**
+   * Scroll window to last message
+   */
+  scrollToLastMessage() {
+    setTimeout(() => {
+      this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    }, 50);
   }
 
 
@@ -126,32 +169,39 @@ export class ChatComponent implements OnInit {
    */
   sendMessage(message): void {
 
-    let data = {
-      owner: this.user.name,
-      participant: this.currentChannelName,
-      message: message
-    };
+    if (message != '') {
 
-    this._websocketService.emit('new-message', data);
+      let data = {
+        owner: this.user.name,
+        participant: this.currentChannelName,
+        message: message
+      };
+
+      this._websocketService.emit('new-message', data);
+    }
+
   }
 
 
+  /**
+   * Update chat
+   * @param name
+   */
   updateChat(name) {
 
-    let self = this;
-
+    // Find the currently active channel and store the history in channel.history
     const tempChannel = this.channels.find(channel => channel.selected === true);
     tempChannel.history = this.chatHistory;
+
     for (const channel of this.channels) {
       if (channel.name === name) {
         channel.selected = true;
         this.chatHistory = channel.history;
         this.currentChannelName = channel.name;
 
-
-        this._websocketService.clean(function () {
-          self._websocketService.init(function () {
-            self.initSocket();
+        this._websocketService.clean(() => {
+          this._websocketService.init(() => {
+            this.initSocket();
           });
         });
 
@@ -159,17 +209,6 @@ export class ChatComponent implements OnInit {
         channel.selected = false;
       }
     }
-  }
-
-
-  showAllUsers() {
-    // this.http.get('http://localhost:3000/users').subscribe(_users => {
-    //   this.userList = _users;
-    //   console.log(_users)
-    // });
-
-
-    console.log(this.userList);
   }
 
 

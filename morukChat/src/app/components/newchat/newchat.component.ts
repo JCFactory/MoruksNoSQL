@@ -42,7 +42,7 @@ export class NewchatComponent implements OnInit {
       };
 
 
-      this.http.post('http://localhost:3000/chats', data).subscribe(response => {
+      this.http.post<any>('http://localhost:3000/chats', data).subscribe(response => {
 
         if (response.status == true) {
           console.log("Chat wurde erstellt");

@@ -90,10 +90,10 @@
     </div>
     <div class="messages" #messageContainer>
       <ul>
-        <li *ngFor="let entry of chatHistory" [class]="getStyle(entry.data.sender)">
+        <li *ngFor="let entry of chatHistory" [class]="getStyle(entry.sender)">
 
           <img src="../../assets/user/thaer.jpg" alt=""/>
-          <p>{{entry.data.message}}</p>
+          <p>{{entry.message}}</p>
         </li>
       </ul>
     </div>

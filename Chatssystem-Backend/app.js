@@ -92,9 +92,7 @@ app.use(function (err, req, res, next) {
 });
 
 
-//myModule.connections.push("Lets begin");
 
-//module.exports = app; OLD
 module.exports = {app: app, server: server, io: io};
 
 mongo.connect(); // Connect with mongodb

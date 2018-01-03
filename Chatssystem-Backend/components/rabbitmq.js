@@ -9,36 +9,6 @@ const EXCHANGE = "NoSQL-Chat";
 module.exports = {
 
     /**
-     * Send message to a channel
-     * @param channel
-     * @param message
-     */
-    sendMessageToChannel: function (channel, message, user, callback) {
-
-        console.log(channel + ' ' + message + ' ' + user);
-
-        amqp.connect(SERVERIP, function (err, conn) {
-            conn.createChannel(function (err, ch) {
-
-                ch.assertExchange(channel, 'fanout', {durable: true});
-
-                var data = {
-                    sender: user,
-                    message: message,
-                    date: new Date().getTime()
-                };
-
-                ch.publish(channel, '', new Buffer(JSON.stringify(data)));
-                messageUtil.info("Sent:" + channel + " " + message + " " + user);
-                callback()
-            });
-
-
-        });
-
-        //mongodb.storeMessage(message, channel, user);
-    },
-    /**
      * Receive a message and store this in mongodb (Group Chat) Default and General...
      */
     receiveMessagesFromChannel: function (channelName, username) {
@@ -152,19 +122,49 @@ module.exports = {
             });
         });
     },
-    receiveMessage: function (channelname, owner, participant, socket, callbackFunc) {
+    /**
+     * Send message to a channel
+     * @param channel
+     * @param message
+     */
+    sendMessageToChannel: function (channel, message, user, callback) {
 
+        console.log(channel + ' ' + message + ' ' + user);
 
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
-                // If user closes page or chat...
-                /*
-                 socket.on('disconnect', function () {
-                     console.log("Anhalten...");
-                     ch.close();
-                 });
- */
+                ch.assertExchange(channel, 'fanout', {durable: true});
+
+                var data = {
+                    sender: user,
+                    message: message,
+                    date: new Date().getTime()
+                };
+
+                ch.publish(channel, '', new Buffer(JSON.stringify(data)));
+                messageUtil.info("Sent:" + channel + " " + message + " " + user);
+                callback()
+            });
+
+
+        });
+
+        //mongodb.storeMessage(message, channel, user);
+    },
+    /**
+     * Receive messages and emit this over websocket
+     * @param channelname
+     * @param owner
+     * @param participant
+     * @param socket
+     * @param callbackFunc
+     */
+    receiveMessage: function (channelname, owner, participant, socket, callbackFunc) {
+
+        amqp.connect(SERVERIP, function (err, conn) {
+            conn.createChannel(function (err, ch) {
+
                 ch.assertExchange(channelname, 'fanout', {durable: true});
 
                 ch.assertQueue(owner + '-' + participant, {exclusive: false}, function (err, q) {
@@ -179,23 +179,14 @@ module.exports = {
                         } catch (ex) {
                             console.log(ex);
                         }
-
                     });
 
                     ch.consume(q.queue, function (msg) {
 
-                        console.log("SocketID: ", socket.id);
-
                         messageUtil.info(owner + " received a message  '" + channelname + "': " + msg.content.toString());
 
-
-//                        console.log(msg.content.toString());
-
                         var msgData = JSON.parse(msg.content.toString());
-                        // If a new message is available, send it to the user/client
 
-
-                        console.log("Emit message");
                         socket.emit("new-message", {
                             data: msgData
                         });
@@ -204,7 +195,6 @@ module.exports = {
 
                         history.save(collection, msgData);
                         ch.ack(msg); // Set message as already read
-
 
                     }, {noAck: false});
 
