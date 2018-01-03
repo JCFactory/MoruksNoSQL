@@ -156,7 +156,7 @@ http://localhost:3000/users
   "firstname": "Inan",
   "lastname": "Bayram",
   "username": "inanbayram"
-  "password": "12ahsdk18asdjkas" <= SHA256 gehashte Passwort!
+  "password": "12ahsdk18asdjkas"
 }
 ```
 
