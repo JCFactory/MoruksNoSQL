@@ -129,6 +129,22 @@ export class ChatComponent implements OnInit {
 
 
   /**
+   * Mark message as read
+   * @param data
+   */
+  markMessageAsRead(data) {
+
+    for (let i = this.chatHistory.length - 1; i >= 0; i--) {
+      if (this.chatHistory[i].message === data.message.data.message && this.chatHistory[i].date === data.message.data.date) {
+        this.chatHistory[i].read = true;
+        break;
+      }
+    }
+
+  };
+
+
+  /**
    * Initalize Socket connection to backend
    */
   initSocket() {
@@ -141,13 +157,37 @@ export class ChatComponent implements OnInit {
     this._websocketService.emit('connect-chat', data);
     this.scrollToLastMessage();
 
+
+    this._websocketService.on('message-read', (data) => {
+
+      if (this.user.name !== data.sender) {
+        this.markMessageAsRead(data);
+      }
+
+    });
+
+
     this._websocketService.on('new-message', (data) => {
+
+
+      // It's a message. Send a acknowledge and add message in history
 
       this.addToHistory(data).subscribe(_hist => {
         this.messageInput = '';
         this.changeDetector.detectChanges();
         this.scrollToLastMessage();
       });
+
+      let ackData = {
+        ack: true,
+        receiver: this.user.name,
+        name: this.currentChannelName,
+        data: data.data
+      };
+
+      // Confirm, that the message has been read
+      this._websocketService.emit('ack', ackData);
+
     });
 
   }
@@ -202,6 +242,7 @@ export class ChatComponent implements OnInit {
         this._websocketService.clean(() => {
           this._websocketService.init(() => {
             this.initSocket();
+            console.log(this.chatHistory);
           });
         });
 
@@ -225,6 +266,15 @@ export class ChatComponent implements OnInit {
     }
   }
 
+
+  /**
+   * Decide if message is from another user
+   * @param sender
+   * @returns {boolean}
+   */
+  ownMessage(sender) {
+    return this.user.name === sender;
+  }
 
 }
 

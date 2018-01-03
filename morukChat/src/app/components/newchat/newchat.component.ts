@@ -32,7 +32,7 @@ export class NewchatComponent implements OnInit {
 
   createChat(contact: any) {
 
-    this.modalService.hide(0);
+    this.modalRef.hide();
 
     if (this.user.name != contact) {
 
@@ -45,13 +45,13 @@ export class NewchatComponent implements OnInit {
       this.http.post<any>('http://localhost:3000/chats', data).subscribe(response => {
 
         if (response.status == true) {
-          console.log("Chat wurde erstellt");
+          alert("Chat wurde erstellt");
         } else {
           console.log("Chat konnte nicht erstellt werden");
         }
       });
     } else {
-      console.log("Geht nicht :/");
+      alert("Du kannst kein Chat mir dir selber erstellen :/")
     }
   }
 }

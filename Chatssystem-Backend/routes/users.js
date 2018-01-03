@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var SHA256 = require("crypto-js/sha256");
+var chatComponent = require('../components/chat');
 
 var mysql = require('mysql');
 var connection = mysql.createConnection({
@@ -11,19 +12,6 @@ var connection = mysql.createConnection({
 });
 connection.connect();
 
-/* initializes a list with all users */
-// function initUserList(callback) {
-//     console.log('is here');
-//     connection.query('SELECT username FROM user', function (error, results, fields) {
-//
-//         if (err) {
-//             return (err);
-//         } else {
-//             console.log('userlist', results);
-//             return(results);
-//         }
-//     });
-// }
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -65,11 +53,14 @@ router.post('/', function (req, res, next) {
         var query = connection.query('INSERT INTO user SET ?', userData, function (error, results, fields) {
             if (error) {
                 throw error;
-                res.json(error);
             }
 
 
             if (results.affectedRows > 0) {
+
+                chatComponent.createGroupChat(username, "General");
+                chatComponent.createGroupChat(username, "Default");
+
                 res.json({
                     status: true
                 });
@@ -80,9 +71,7 @@ router.post('/', function (req, res, next) {
                 })
             }
         });
-
     }
-
 
 });
 
@@ -98,7 +87,6 @@ router.get('/:username', function (req, res, next) {
     connection.query('SELECT id, firstname, lastname FROM user WHERE username = ?', username, function (error, results, fields) {
         if (error) {
             throw error;
-            res.json(error);
         } else {
             if (results.length > 0) {
                 res.json({

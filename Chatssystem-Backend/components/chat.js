@@ -1,24 +1,30 @@
 var mongodb = require('./mongodb');
 var rabbitmq = require('./rabbitmq');
 
+const CHATS = "Chats";
+
 var chat = function () {
 
 };
 
 
+/**
+ * Create group chat
+ * @param owner
+ * @param groupname
+ */
 chat.createGroupChat = function (owner, groupname) {
-
 
     var checkData = {
         owner: owner,
         participant: groupname
     };
 
-    mongodb.db.collection("Chats").find(checkData).toArray(function (err, result) {
-        if(err) {
+    mongodb.db.collection(CHATS).find(checkData).toArray(function (err, result) {
+        if (err) {
             throw err;
         } else {
-            if(result.length > 0) {
+            if (result.length > 0) {
                 console.log("Group Chat already exists");
             } else {
 
@@ -36,7 +42,7 @@ chat.createGroupChat = function (owner, groupname) {
                         };
 
                         // Add the chat into "Chats" collection
-                        mongodb.db.collection("Chats").insertOne(data, function (err, res) {
+                        mongodb.db.collection(CHATS).insertOne(data, function (err, res) {
                             if (err) {
                                 throw err;
                             } else {
@@ -45,7 +51,6 @@ chat.createGroupChat = function (owner, groupname) {
                         });
 
                         rabbitmq.initGroupChat(owner, groupname);
-                        //callback(true);
                     }
 
                 });
@@ -53,10 +58,8 @@ chat.createGroupChat = function (owner, groupname) {
             }
         }
     });
-
-
-
 };
+
 
 /**
  * Create chat
@@ -64,11 +67,6 @@ chat.createGroupChat = function (owner, groupname) {
  * @param participant
  */
 chat.create = function (owner, participant, callback) {
-
-    // Example: owner = inan, participant = steffen
-    // Create two collections
-    // Collection 1 => inan-steffen => History of inan
-    // Collection 2 => steffen-inan => History of steffen
 
     mongodb.db.createCollection(owner + '-' + participant, function (err, res) { // Create history collection of owner
 
@@ -95,7 +93,7 @@ chat.create = function (owner, participant, callback) {
                     };
 
                     // Add the chat into "Chats" collection
-                    mongodb.db.collection("Chats").insertMany([data, data2], function (err, res) {
+                    mongodb.db.collection(CHATS).insertMany([data, data2], function (err, res) {
                         if (err) {
                             throw err;
                         } else {
@@ -109,12 +107,9 @@ chat.create = function (owner, participant, callback) {
                 }
             });
         }
-
-
     });
-
-
 };
+
 
 /**
  * Get Chatlist by username
@@ -123,17 +118,22 @@ chat.create = function (owner, participant, callback) {
  */
 chat.getByUsername = function (username, callback) {
 
-    mongodb.db.collection("Chats").find({owner: username}).toArray(function (err, result) {
+    mongodb.db.collection(CHATS).find({owner: username}).toArray(function (err, result) {
         if (err) {
             callback(err);
         } else {
-
             callback(result);
         }
     })
 };
 
 
+/**
+ * Check is chat already exists
+ * @param owner
+ * @param participant
+ * @param callback
+ */
 chat.alreadyExist = function (owner, participant, callback) {
 
 
@@ -148,7 +148,7 @@ chat.alreadyExist = function (owner, participant, callback) {
     };
 
 
-    mongodb.db.collection("Chats").find({$or: [data, data2]}).toArray(function (err, result) {
+    mongodb.db.collection(CHATS).find({$or: [data, data2]}).toArray(function (err, result) {
         if (err) {
             //callback(err);
             throw err;
@@ -162,7 +162,12 @@ chat.alreadyExist = function (owner, participant, callback) {
     });
 };
 
-
+/**
+ * Get Chat exchange name
+ * @param owner
+ * @param participant
+ * @param callback
+ */
 chat.getExchangeName = function (owner, participant, callback) {
 
     var data = {
@@ -175,9 +180,8 @@ chat.getExchangeName = function (owner, participant, callback) {
         participant: owner
     };
 
-    mongodb.db.collection("Chats").find({$or: [data, data2]}).toArray(function (err, result) {
+    mongodb.db.collection(CHATS).find({$or: [data, data2]}).toArray(function (err, result) {
         if (err) {
-            //callback(err);
             throw err;
         } else {
             if (result.length > 0) {

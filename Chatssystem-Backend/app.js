@@ -4,13 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var chatComponent = require('./components/chat');
 
 var app = express();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-var chatComponent = require('./components/chat');
 
 // Import files for routing
 var index = require('./routes/index');
@@ -22,10 +21,12 @@ var history = require('./routes/history');
 
 var util = require('./components/rabbitmq');
 var mongo = require('./components/mongodb');
+var historyComponent = require('./components/history');
 
 
 connections = [];
 
+// Websocket
 io.on('connect', function (socket) {
     connections.push(socket);
     console.log("Websocket connection opened: " + connections.length);
@@ -92,18 +93,17 @@ app.use(function (err, req, res, next) {
 });
 
 
-
 module.exports = {app: app, server: server, io: io};
 
 mongo.connect(); // Connect with mongodb
 
 
+// Websocket /chatmessage
 var privatechat = io.of('/chatmessage');
 privatechat.on('connection', function (socket) {
 
 
     socket.on('disconnect', function (data) {
-        console.log('Disconnect...');
         socket.removeAllListeners('new-message');
     });
 
@@ -119,6 +119,18 @@ privatechat.on('connection', function (socket) {
 
         if (participant === "Default" || participant === "General") {
             console.log("Group Chat");
+
+            socket.on('ack', function (ackData) {
+
+                if (ackData.ack === true) {
+                    util.sendMessageToChannel(data.participant, ackData, data.owner, function () {
+                        console.log("Acknowledge gesendet");
+                    });
+                }
+
+            });
+
+
             socket.on('new-message', function (datax) {
                 console.log(data);
 
@@ -139,9 +151,20 @@ privatechat.on('connection', function (socket) {
                     var exchange = datax;
                     console.log("Privat Chat");
 
+
+                    socket.on('ack', function (ackData) {
+
+                        if (ackData.ack === true) {
+                            util.sendMessageToChannel(exchange, ackData, owner, function () {
+                                console.log("Acknowledge gesendet");
+                            });
+                        }
+
+                    });
+
                     socket.on('new-message', function (data) {
                         console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
-                        util.sendMessageToChannel(exchange, data.message, owner,function () {
+                        util.sendMessageToChannel(exchange, data.message, owner, function () {
                             console.log("Message sent");
                         });
                     });
@@ -152,7 +175,6 @@ privatechat.on('connection', function (socket) {
 
                 } else {
                     console.log("No Exchange found. Closing Socket");
-                    //socket.close();
                 }
 
             });
@@ -163,101 +185,21 @@ privatechat.on('connection', function (socket) {
 
 });
 
-
-/*
-var privatechat = io.of('/chatmessage');
-privatechat.on('connection', function (socket) {
-
-    // Connect user...
-    socket.on('connect-chat', function (data) {
-
-        var owner = data.owner;
-        var participant = data.participant;
-        //var exchange = null;
-
-        console.log("Login: " + data.owner + " in: " + data.owner + '-' + data.participant);
-        if (participant == "Default" || participant == "General") {
-            var exchange = participant;
-
-            console.log("Gruppen Chat");
-
-            socket.emit('status', "erfolgreich");
-
-            socket.on('new-message', function (data) {
-                console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
-                util.sendMessageToChannel(exchange, data.message, owner);
-            });
-
-
-
-
-
-            util.receiveMessage(exchange, owner, participant, socket);
-
-        } else {
-            chatComponent.getExchangeName(owner, participant, function (datax) {
-                if (datax !== null) {
-                    console.log(datax);
-                    var exchange = datax;
-                    console.log("Privat Chat");
-
-                    socket.emit('status', "erfolgreich");
-
-                    socket.on('new-message', function (data) {
-                        console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
-                        util.sendMessageToChannel(exchange, data.message, owner);
-                    });
-
-                    util.receiveMessage(exchange, owner, participant, socket);
-
-                } else {
-                    console.log("No Exchange found. Closing Socket");
-                    //socket.close();
-                }
-
-            });
-
-        }
-
-
-    });
-
-});
-*/
 
 // Init Queue
-
 const GENERAL = "General";
 const DEFAULT = "Default";
 var userList = ["inanbayram", "steffen", "jacky"];
 
-// function createGroupChats(userList) {
-//
-//     console.log(userList);
-//
-//     userList.forEach(function (username) {
-//         chatComponent.createGroupChat(username, GENERAL);
-//         //util.initQueue(GENERAL, username);
-//     });
-//
-//     userList.forEach(function (username) {
-//         chatComponent.createGroupChat(username, DEFAULT);
-//         //util.initQueue(DEFAULT, username);
-//     });
-// }
-
-
-// initUserList(createGroupChats);
+// mysql...
 
 
 setTimeout(function () {
     userList.forEach(function (username) {
         chatComponent.createGroupChat(username, GENERAL);
-        //util.initQueue(GENERAL, username);
     });
 
     userList.forEach(function (username) {
         chatComponent.createGroupChat(username, DEFAULT);
-        //util.initQueue(DEFAULT, username);
     });
 }, 1000);

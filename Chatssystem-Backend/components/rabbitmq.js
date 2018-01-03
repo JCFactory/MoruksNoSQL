@@ -27,7 +27,6 @@ module.exports = {
 
                     ch.consume(q.queue, function (msg) {
 
-                        // mongodb.storeMessage(msg.content.toString(), channelName);
                         messageUtil.info(username + " received a message  '" + channelName + "': " + msg.content.toString());
                     }, {consumerTag: username, noAck: false});
 
@@ -129,8 +128,6 @@ module.exports = {
      */
     sendMessageToChannel: function (channel, message, user, callback) {
 
-        console.log(channel + ' ' + message + ' ' + user);
-
         amqp.connect(SERVERIP, function (err, conn) {
             conn.createChannel(function (err, ch) {
 
@@ -139,7 +136,8 @@ module.exports = {
                 var data = {
                     sender: user,
                     message: message,
-                    date: new Date().getTime()
+                    date: new Date().getTime(),
+                    read: false
                 };
 
                 ch.publish(channel, '', new Buffer(JSON.stringify(data)));
@@ -172,7 +170,6 @@ module.exports = {
 
 
                     socket.on('disconnect', function () {
-                        console.log("Anhalten...");
                         try {
                             conn.close();
                             callbackFunc();
@@ -181,20 +178,33 @@ module.exports = {
                         }
                     });
 
-                    ch.consume(q.queue, function (msg) {
 
-                        messageUtil.info(owner + " received a message  '" + channelname + "': " + msg.content.toString());
+                    ch.consume(q.queue, function (msg) {
 
                         var msgData = JSON.parse(msg.content.toString());
 
-                        socket.emit("new-message", {
-                            data: msgData
-                        });
 
-                        var collection = owner + '-' + participant;
+                        // Check if message is a acknowledge message
+                        if (msgData.message.ack === true) {
 
-                        history.save(collection, msgData);
-                        ch.ack(msg); // Set message as already read
+                            if (msgData.message.receiver !== msgData.message.data.sender) {
+
+                                socket.emit('message-read', msgData);
+                                history.markAsRead(msgData, owner);
+                            }
+
+                        } else {
+
+                            socket.emit("new-message", {
+                                data: msgData
+                            });
+
+                            var collection = owner + '-' + participant;
+                            history.save(collection, msgData);
+                        }
+
+
+                        ch.ack(msg);
 
                     }, {noAck: false});
 
