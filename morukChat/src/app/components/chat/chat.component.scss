@@ -681,3 +681,47 @@
 #frame .content .message-input .wrap button:focus {
   outline: none;
 }
+
+#frame {
+  &.konami {
+
+    #sidepanel {
+      background: deeppink;
+
+      #contacts {
+        overflow-y: auto;
+      }
+    }
+    .content {
+
+      .contact-profile {
+        background: pink;
+      }
+
+      .messages {
+        background: url("../../../assets/Einhorn.png") no-repeat;
+        background-size: 350px 380px;
+        background-position: center;
+
+        ul {
+          .sent {
+            p {
+              background: #bc65c5;
+            }
+          }
+        }
+      }
+
+      .message-input {
+        background: pink;
+
+        .wrap {
+          .submit {
+            background: #bc65c5;
+          }
+        }
+      }
+
+    }
+  }
+}

@@ -28,6 +28,7 @@ export class ChatComponent implements OnInit {
   chatList: any; // Chatlist from API
   chatHistory: any; // Temporary Chat History
   currentChannelName: string;
+  isKonami = false;
 
   messageInput = '';
 
@@ -202,14 +203,24 @@ export class ChatComponent implements OnInit {
     }, 50);
   }
 
+  /**
+   * EasterEgg
+   * @param msg
+   */
+  msgIsKonami(message) {
+    let msg = message.toLowerCase();
+    let replacedMsg = msg.split(' ').join('');
+    return (replacedMsg === 'obenobenuntenuntenlinksrechtslinksrechtsba');
+  }
 
   /**
    * Send message
    * @param message
    */
   sendMessage(message): void {
-
     if (message != '') {
+
+      this.isKonami = this.msgIsKonami(message);
 
       let data = {
         owner: this.user.name,
