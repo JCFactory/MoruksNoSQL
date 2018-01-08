@@ -58,8 +58,8 @@ user.add = function (userData, callback) {
 
         if (results.affectedRows > 0) {
 
-            chatComponent.createGroupChat(username, "General");
-            chatComponent.createGroupChat(username, "Default");
+            chatComponent.createGroupChat(userData.username, "General");
+            chatComponent.createGroupChat(userData.username, "Default");
 
 
             callback({
