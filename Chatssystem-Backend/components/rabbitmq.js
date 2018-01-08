@@ -8,32 +8,6 @@ const EXCHANGE = "NoSQL-Chat";
 
 module.exports = {
 
-    /**
-     * Receive a message and store this in mongodb (Group Chat) Default and General...
-     */
-    receiveMessagesFromChannel: function (channelName, username) {
-
-
-        amqp.connect(SERVERIP, function (err, conn) {
-            conn.createChannel(function (err, ch) {
-
-
-                ch.assertExchange(EXCHANGE, 'fanout', {durable: true});
-
-                ch.assertQueue(channelName, {exclusive: false}, function (err, q) {
-                    messageUtil.info("Waiting for messages. To exit press CTRL+C");
-                    ch.bindQueue(q.queue, EXCHANGE, channelName);
-
-
-                    ch.consume(q.queue, function (msg) {
-
-                        messageUtil.info(username + " received a message  '" + channelName + "': " + msg.content.toString());
-                    }, {consumerTag: username, noAck: false});
-
-                });
-            });
-        });
-    },
     initGroupChat: function (owner, groupname) {
 
         const exchangeName = groupname; // Channelname
@@ -87,40 +61,6 @@ module.exports = {
         });
 
     },
-    initQueue: function (queuename, username) {
-
-
-        amqp.connect(SERVERIP, function (err, conn) {
-            conn.createChannel(function (err, ch) {
-
-
-                ch.assertExchange(queuename, 'fanout', {durable: true});
-
-                ch.assertQueue(username, {exclusive: false}, function (err, q) {
-
-                    ch.bindQueue(q.queue, queuename, username);
-                    messageUtil.info("Initalize Queue " + queuename + " for user: " + username);
-                });
-            });
-        });
-    },
-    initPrivateQueue: function (owner, participant) {
-        amqp.connect(SERVERIP, function (err, conn) {
-            conn.createChannel(function (err, ch) {
-
-                const exchange = "Private";
-                const queuename = owner + "-" + participant;
-
-                ch.assertExchange(exchange, 'fanout', {durable: true});
-
-                ch.assertQueue(queuename, {exclusive: false}, function (err, q) {
-
-                    ch.bindQueue(q.queue, exchange, queuename);
-                    messageUtil.info("Initalize Private Queue " + queuename);
-                });
-            });
-        });
-    },
     /**
      * Send message to a channel
      * @param channel
@@ -144,11 +84,7 @@ module.exports = {
                 messageUtil.info("Sent:" + channel + " " + message + " " + user);
                 callback()
             });
-
-
         });
-
-        //mongodb.storeMessage(message, channel, user);
     },
     /**
      * Receive messages and emit this over websocket
@@ -174,10 +110,9 @@ module.exports = {
                             conn.close();
                             callbackFunc();
                         } catch (ex) {
-                            console.log(ex);
+                            messageUtil.error(ex)
                         }
                     });
-
 
                     ch.consume(q.queue, function (msg) {
 
@@ -203,11 +138,9 @@ module.exports = {
                             history.save(collection, msgData);
                         }
 
-
                         ch.ack(msg);
 
                     }, {noAck: false});
-
                 });
             });
         });

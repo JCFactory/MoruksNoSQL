@@ -3,8 +3,8 @@ var mongodb = require('./mongodb');
 const GENERAL = "General";
 const DEFAULT = "Default";
 
-var history = function () {
 
+var history = function () {
 };
 
 
@@ -40,6 +40,7 @@ history.save = function (channelname, data) {
     });
 
 };
+
 
 /**
  * Mark message as read => read: true
@@ -88,9 +89,9 @@ history.markAsRead = function (data, owner) {
                 throw err;
             }
         });
-
     }
 
 };
+
 
 module.exports = history;

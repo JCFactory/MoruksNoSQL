@@ -1,31 +1,25 @@
 var express = require('express');
 var router = express.Router();
 var SHA256 = require("crypto-js/sha256");
-var chatComponent = require('../components/chat');
 
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'password',
-    database: 'nosql'
-});
-connection.connect();
+var userComponent = require('../components/user');
 
 
-/* GET users listing. */
+/**
+ * GET - Get all users (only the usernames)
+ */
 router.get('/', function (req, res, next) {
 
-    connection.query('SELECT username FROM user', function (error, results, fields) {
-        if (error) {
-            throw error;
-        } else {
-            res.json(results);
-        }
+    userComponent.getAllUsernames(function (data) {
+        res.json(data);
     });
+
 });
 
 
+/**
+ * POST - Add a new user
+ */
 router.post('/', function (req, res, next) {
 
     var firstname = req.body.firstname;
@@ -49,61 +43,23 @@ router.post('/', function (req, res, next) {
             password: hashedPassword
         };
 
-
-        var query = connection.query('INSERT INTO user SET ?', userData, function (error, results, fields) {
-            if (error) {
-                throw error;
-            }
-
-
-            if (results.affectedRows > 0) {
-
-                chatComponent.createGroupChat(username, "General");
-                chatComponent.createGroupChat(username, "Default");
-
-                res.json({
-                    status: true
-                });
-            } else {
-                res.json({
-                    status: false,
-                    message: "User not created"
-                })
-            }
+        userComponent.add(userData, function (result) {
+            res.json(result);
         });
     }
-
 });
 
 
 /**
- * Get user information by id
+ * GET - Get user information by id
  */
 router.get('/:username', function (req, res, next) {
 
-
     var username = req.params.username;
 
-    connection.query('SELECT id, firstname, lastname FROM user WHERE username = ?', username, function (error, results, fields) {
-        if (error) {
-            throw error;
-        } else {
-            if (results.length > 0) {
-                res.json({
-                    status: true,
-                    data: results
-                })
-            } else {
-                res.json({
-                    status: false,
-                    message: "User not found"
-                })
-
-            }
-        }
+    userComponent.getByUserName(username, function (result) {
+        res.json(result);
     });
-
-
 });
 
 
@@ -121,29 +77,11 @@ router.post('/login', function (req, res, next) {
             message: "Missing parameter"
         });
     } else {
-
-        connection.query('SELECT * FROM user WHERE username = ? AND password = ?', [username, password], function (error, results, fields) {
-            if (error) {
-                throw error;
-            } else {
-                if (results.length > 0) {
-                    res.json({
-                        status: true,
-                        message: "Login okay"
-                    })
-
-                } else {
-                    res.json({
-                        status: false,
-                        message: "Login failed"
-                    })
-
-                }
-            }
+        userComponent.checkCrediental(username, password, function (result) {
+            res.json(result);
         });
-
     }
-
 });
+
 
 module.exports = router;

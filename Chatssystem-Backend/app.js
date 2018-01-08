@@ -15,13 +15,13 @@ var io = require('socket.io')(server);
 var index = require('./routes/index');
 var users = require('./routes/users');
 var chats = require('./routes/chats');
-var chatmessage = require('./routes/chatmessage');
 var history = require('./routes/history');
 
 
+var messageUtil = require('./components/message');
 var util = require('./components/rabbitmq');
 var mongo = require('./components/mongodb');
-var historyComponent = require('./components/history');
+var userComponent = require('./components/user');
 
 
 connections = [];
@@ -29,11 +29,11 @@ connections = [];
 // Websocket
 io.on('connect', function (socket) {
     connections.push(socket);
-    console.log("Websocket connection opened: " + connections.length);
+    messageUtil.info("Websocket connection opened. Currently connected: " + connections.length);
 
     socket.on('disconnect', function (socket) {
         connections.splice(connections.indexOf(socket), 1);
-        console.log("Websocket connection closed: " + connections.length);
+        messageUtil.info("Websocket connection closes. Currently connected: " + connections.length);
     });
 });
 
@@ -43,11 +43,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 app.io = io;
 
+
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(function (req, res, next) {
     res.io = io;
     next();
 });
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -70,7 +72,6 @@ app.use(function (req, res, next) {
 app.use('/', index);
 app.use('/users', users);
 app.use('/chats', chats);
-app.use('/chatmessage', chatmessage);
 app.use('/history', history);
 
 
@@ -95,7 +96,8 @@ app.use(function (err, req, res, next) {
 
 module.exports = {app: app, server: server, io: io};
 
-mongo.connect(); // Connect with mongodb
+/* Connect with mongodb */
+mongo.connect();
 
 
 // Websocket /chatmessage
@@ -115,91 +117,81 @@ privatechat.on('connection', function (socket) {
         var participant = data.participant;
         var exchange = participant;
 
-        console.log("Login: " + owner + " in: " + owner + '-' + participant);
+        messageUtil.info(owner + "logged in "+ owner + '-' + participant)
 
+        /* If Chat is public */
         if (participant === "Default" || participant === "General") {
-            console.log("Group Chat");
+            messageUtil.info("Join Group Chat");
 
             socket.on('ack', function (ackData) {
 
                 if (ackData.ack === true) {
                     util.sendMessageToChannel(data.participant, ackData, data.owner, function () {
-                        console.log("Acknowledge gesendet");
+
                     });
                 }
-
             });
 
-
             socket.on('new-message', function (datax) {
-                console.log(data);
 
                 util.sendMessageToChannel(data.participant, datax.message, data.owner, function () {
-                    console.log("Message sent");
+
                 });
             });
 
             util.receiveMessage(exchange, owner, participant, socket, function () {
-                console.log("Stopped");
+                messageUtil.info("Stop consuming messages");
             });
 
 
         } else {
             chatComponent.getExchangeName(owner, participant, function (datax) {
                 if (datax !== null) {
-                    console.log(datax);
+                    messageUtil.info("Joing Private Chat");
                     var exchange = datax;
-                    console.log("Privat Chat");
-
 
                     socket.on('ack', function (ackData) {
 
                         if (ackData.ack === true) {
                             util.sendMessageToChannel(exchange, ackData, owner, function () {
-                                console.log("Acknowledge gesendet");
+
                             });
                         }
 
                     });
 
                     socket.on('new-message', function (data) {
-                        console.log("Neue Nachricht: " + exchange + " " + data.message + " " + owner);
+
                         util.sendMessageToChannel(exchange, data.message, owner, function () {
-                            console.log("Message sent");
+
                         });
                     });
 
                     util.receiveMessage(exchange, owner, participant, socket, function () {
-                        console.log("Stopped Privat Chat");
+                        messageUtil.info("Stop consuming messages");
                     });
 
                 } else {
-                    console.log("No Exchange found. Closing Socket");
+                    messageUtil.warning("Exchange not found. Closing Web-Socket");
                 }
-
             });
-
         }
-
     });
-
 });
 
 
-// Init Queue
+/* Initialize Users and their exchanges/queues*/
 const GENERAL = "General";
 const DEFAULT = "Default";
-var userList = ["inanbayram", "steffen", "jacky"];
 
-// mysql...
+userComponent.getAll(function (userList) {
 
-
-setTimeout(function () {
-    userList.forEach(function (username) {
-        chatComponent.createGroupChat(username, GENERAL);
+    userList.forEach(function (user) {
+        chatComponent.createGroupChat(user.username, GENERAL);
     });
 
-    userList.forEach(function (username) {
-        chatComponent.createGroupChat(username, DEFAULT);
+    userList.forEach(function (user) {
+        chatComponent.createGroupChat(user.username, DEFAULT);
     });
-}, 1000);
+});
+
